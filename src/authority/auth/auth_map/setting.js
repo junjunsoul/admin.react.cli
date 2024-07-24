@@ -24,8 +24,8 @@ export default {
     '/setting/interface_list':[
         setting.getApiList.url
     ],
-    '/setting/interface_list#add':[setting.addApi.url],
-    '/setting/interface_list#edit':[setting.editApi.url,setting.getApiMenuInfo.url],
+    '/setting/interface_list#add':[setting.storeApi.url],
+    '/setting/interface_list#edit':[setting.getApiMenuInfo.url],
     //角色管理 
     '/setting/role_manage':[
         setting.roleSelect.url

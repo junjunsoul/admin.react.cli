@@ -12,7 +12,7 @@
 	--ag-text-color: var(--ag-inherited-text-color, var(--ag-foreground-color));
 	--ag-accent-color: var(--ag-inherited-accent-color, #2196f3);
 	--ag-invalid-color: var(--ag-inherited-invalid-color, #e02525);
-	--ag-border-color: var(--ag-inherited-border-color, #71788226);
+	--ag-border-color: var(--ag-inherited-border-color, #CECECE26);
 	--ag-wrapper-border: var(--ag-inherited-wrapper-border, solid 1px var(--ag-border-color));
 	--ag-row-border: var(--ag-inherited-row-border, solid 1px var(--ag-border-color));
 	--ag-color-scheme: var(--ag-inherited-color-scheme, light);

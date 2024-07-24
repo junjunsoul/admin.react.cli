@@ -125,7 +125,7 @@ const Page = forwardRef((props, ref) => {
   //动态高度
   const onLayoutResize = () => {
     if (wrapRef && wrapRef.current) {
-      let top = wrapRef.current.getBoundingClientRect().top + 20
+      let top = wrapRef.current.getBoundingClientRect().top + 12
       let documentHeight = document.documentElement.clientHeight || window.innerHeight
       if (props.height) {
         setHeight(props.height)

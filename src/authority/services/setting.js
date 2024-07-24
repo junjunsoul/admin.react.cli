@@ -84,13 +84,9 @@ export default {
         "title": "接口清单",
         "url": "/api/getApiList"
     },
-    addApi: {
+    storeApi: {
         "title": "接口清单",
-        "url": "/api/addApi"
-    },
-    editApi: {
-        "title": "接口清单",
-        "url": "/api/editApi"
+        "url": "/api/storeApi"
     },
     getApiMenuInfo: {
         "title": "接口清单",

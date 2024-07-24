@@ -8,6 +8,10 @@ export default {
       const response = yield call(post, api.getApiList.url, payload);
       callback && callback(response);
     },
+    *storeApi({ payload, callback }, { call, put }) {
+      const response = yield call(post, api.storeApi.url, payload);
+      callback && callback(response);
+    },
     *commonUrl({ payload, url, callback }, { call, put }) {
       const response = yield call(post, url, payload);
       callback && callback(response);

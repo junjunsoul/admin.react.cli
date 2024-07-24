@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { connect } from '@umijs/max';
 import {
-    Spin,
-    ConfigProvider
+    Spin
 } from 'antd'
 import { isEmpty } from 'lodash'
 import PcLayout from './PcLayout'
@@ -24,4 +23,4 @@ function Page(props) {
     }
     return <PcLayout {...props} />
 }
-export default connect(({ user: { currentUser, authority }, global:{documentTitle} }) => ({ currentUser, authority, documentTitle }))(Page)
+export default connect(({ user: { currentUser, authority }, global: { documentTitle } }) => ({ currentUser, authority, documentTitle }))(Page)

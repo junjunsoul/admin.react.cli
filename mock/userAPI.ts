@@ -33,8 +33,7 @@ export default {
           },
           auth_api_list:[
             '/api/getApiList',
-            '/api/addApi',
-            '/api/editApi',
+            '/api/storeApi',
             '/api/getApiMenuInfo'
           ]
         }
@@ -49,11 +48,17 @@ export default {
     res.json({
       code:200,
       data:[
-        { route:'/api/getApiList',name:'接口清单',description:''},
-        { route:'/api/addApi',name:'接口清单',description:''},
-        { route:'/api/editApi',name:'接口清单',description:''},
-        { route:'/api/getApiMenuInfo',name:'接口清单',description:''},
+        { route:'/api/getApiList',name:'接口清单',description:'这是个接口'},
+        { route:'/api/addApi',name:'接口清单',description:'这是个接口'},
+        { route:'/api/editApi',name:'接口清单',description:'这是个接口'},
+        { route:'/api/getApiMenuInfo',name:'接口清单',description:'这是个接口'},
       ]
     })
-  }
+  },
+  'POST /api/storeApi':(req:any,res:any)=>{
+    res.json({
+      code:200,
+      data:{}
+    })
+  },
 };
