@@ -12,6 +12,14 @@ export default {
       const response = yield call(post, api.storeApi.url, payload);
       callback && callback(response);
     },
+    *getApiInfo({ payload, callback }, { call, put }) {
+      const response = yield call(post, api.getApiInfo.url, payload);
+      callback && callback(response);
+    },
+    *roleSelect({ payload, callback }, { call, put }) {
+      const response = yield call(post, api.roleSelect.url, payload);
+      callback && callback(response);
+    },
     *commonUrl({ payload, url, callback }, { call, put }) {
       const response = yield call(post, url, payload);
       callback && callback(response);

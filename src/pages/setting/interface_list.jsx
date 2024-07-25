@@ -11,42 +11,56 @@ import {
 import { PlusOutlined } from '@ant-design/icons'
 import { asyncPost } from '@/utils'
 import JTable from '@/components/JTable'
+import DataCart from '@/components/DataSelect';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper'
 const { TextArea } = Input
 const URL_M = {
     list: 'setting/getApiList',
-    store: 'setting/storeApi'
+    store: 'setting/storeApi',
+    getApiInfo: 'setting/getApiInfo',
+    roleSelect: 'setting/roleSelect',
 }
 const pageName = '接口清单'
 const FormLayout = forwardRef((props, ref) => {
-    const { 
-        reload, 
-        loading=[],
-        dispatch, 
+    const {
+        reload,
+        loading = [],
+        dispatch,
     } = props
     const formRef = useRef(null)
     const [visible, setVisible] = useState(false)
     const [formState, setFormState] = useState('add')
     const [initialValues, setInitialValues] = useState({})
+    const [roleList, setRoleList] = useState([])
     useImperativeHandle(ref, () => ({
         add,
         edit,
     }))
-    const add = () => {
-        setInitialValues({})
+    const add = (data) => {
+        getRoleSelect()
+        setInitialValues(data)
         setFormState('add')
         setVisible(true)
     }
     const edit = (data) => {
+        getRoleSelect()
         setInitialValues(data)
         setFormState('update')
         setVisible(true)
     }
+    const getRoleSelect = async () => {
+        if (roleList.length == 0) {
+            const res =await asyncPost(URL_M['roleSelect'], {}, dispatch)
+            if (res.code == 200) {
+                setRoleList(res.data)
+            }
+        }
+    }
     const okHandle = () => {
         formRef.current.validateFields().then(async (fieldsValue) => {
             let result = { ...fieldsValue };
-            const res = await asyncPost(URL_M['store'],result,dispatch)
-            if(res.code==200){
+            const res = await asyncPost(URL_M['store'], result, dispatch)
+            if (res.code == 200) {
                 reload()
                 onCancel()
             }
@@ -106,6 +120,22 @@ const FormLayout = forwardRef((props, ref) => {
             >
                 <TextArea rows={2} placeholder="请输入" />
             </Form.Item>
+            <Form.Item
+                name="role_ids"
+                noStyle
+            >
+                <DataCart
+                    title="接口授权"
+                    list={roleList.map(item => {
+                        return {
+                            label: item.role_name,
+                            value: item.role_id,
+                        };
+                    })}
+                    bodyStyle={{ height: 300, overflowY: 'auto' }}
+                    chunkSpan={2}
+                />
+            </Form.Item>
         </Form>
     </Modal>
 })
@@ -134,16 +164,19 @@ const Page = (props) => {
     }
 
     const handleAdd = () => {
-        formRef.current.add()
+        formRef.current.add({})
     }
-    const handleUpdate = data => {
-        formRef.current.edit(data)
+    const handleUpdate = async data => {
+        const res = await asyncPost(URL_M['getApiInfo'],{},dispatch)
+        if(res.code==200){
+            formRef.current.edit(res.data)
+        }
     }
-    const handleAuth = data => {
-
-    }
-    const handleCopy = data => {
-
+    const handleCopy = async data => {
+        const res = await asyncPost(URL_M['getApiInfo'],{},dispatch)
+        if(res.code==200){
+            formRef.current.add({role_ids:res.data.role_ids})
+        }
     }
     const actionRenderer = (props) => {
         const {
@@ -151,21 +184,20 @@ const Page = (props) => {
         } = props
         return <Space split={<Divider type="vertical" />}>
             <a onClick={() => handleUpdate(data)}>修改</a>
-            <a onClick={() => handleAuth(data)}>授权</a>
             <a onClick={() => handleCopy(data)}>复制</a>
         </Space >
     }
-    const searchBar = authorized['add'] && <Button onClick={handleAdd} icon={<PlusOutlined />} type="primary"> 新建 </Button>
+    const searchBar = authorized['store'] && <Button onClick={handleAdd} icon={<PlusOutlined />} type="primary"> 新建 </Button>
     const columnCus = [
         { headerName: '接口地址', suppressHeaderMenuButton: false, field: 'route' },
         { headerName: '名称', field: 'name' },
         { headerName: '接口描述', field: 'description' },
     ]
-    if (authorized['edit']) {
+    if (authorized['store']) {
         columnCus.push({
             headerName: '',
             field: 'action',
-            width: 100,
+            // width: 100,
             // pinned: 'right',
             cellStyle: { textAlign: 'center' },
             cellRenderer: actionRenderer,

@@ -88,9 +88,13 @@ export default {
         "title": "接口清单",
         "url": "/api/storeApi"
     },
-    getApiMenuInfo: {
+    roleSelect: {
         "title": "接口清单",
-        "url": "/api/getApiMenuInfo"
+        "url": "/api/roleSelect"
+    },
+    getApiInfo: {
+        "title": "接口清单",
+        "url": "/api/getApiInfo"
     },
     authorizeRole: {
         "title": "接口清单",

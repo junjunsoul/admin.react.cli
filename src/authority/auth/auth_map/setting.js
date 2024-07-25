@@ -22,10 +22,13 @@ export default {
     ],
     //接口清单
     '/setting/interface_list':[
-        setting.getApiList.url
+        setting.getApiList.url,
+        setting.roleSelect.url,
     ],
-    '/setting/interface_list#add':[setting.storeApi.url],
-    '/setting/interface_list#edit':[setting.getApiMenuInfo.url],
+    '/setting/interface_list#store':[
+        setting.storeApi.url,
+        setting.getApiInfo.url,
+    ],
     //角色管理 
     '/setting/role_manage':[
         setting.roleSelect.url

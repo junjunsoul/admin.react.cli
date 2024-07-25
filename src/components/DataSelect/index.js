@@ -1,136 +1,100 @@
-import React, { Component } from 'react';
-import { Input, Checkbox, Row, Col, Empty, Spin } from 'antd';
-import classNames from 'classnames';
-import styles from './index.less';
-const CheckboxGroup = Checkbox.Group;
+import React, { useState, useEffect } from 'react';
+import { Input, Checkbox, Row, Col, Empty, Card } from 'antd';
+import { chunk, debounce, uniq } from 'lodash';
+const { Search } = Input;
 
-class DataSelect extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectKey: '',
-      seachText: '',
-    };
-  }
-  onSelect = selectKey => {
-    this.setState({
-      selectKey,
-    });
-  };
-  onCheckAll = all => {
-    const { onCheck, list } = this.props;
-    onCheck(all ? list.map(row => row.value) : []);
-  };
-  onCheck = checkList => {
-    const { onCheck } = this.props;
-    onCheck(checkList);
-  };
-  onSeach = e => {
-    this.setState({
-      seachText: e.currentTarget.value,
-    });
-  };
-  clear = () => {
-    this.setState({
-      selectKey: '',
-    });
-  };
-  renderSelectNodes = (list, seachText, selectKey) => {
-    return list
-      .filter(row => row.label.toLocaleLowerCase().indexOf(seachText.toLocaleLowerCase()) > -1)
-      .map(row => {
-        const cls = classNames(styles.rowItem, {
-          [styles.active]: row.value == selectKey,
-        });
-        return (
-          <div onClick={() => this.onSelect(row.value)} key={row.value} className={cls}>
-            {row.label}
-          </div>
-        );
-      });
-  };
+export default (props) => {
+  const {
+    list = [],
+    value = [],
+    chunkSpan = 2,
+    bodyStyle = {},
+    title = '',
+    chilRender,
+    showCheck = true,
+    showLabel = true,
+    ext = null,
+    onChange = () => { }
+  } = props
+  const [filterText, setFilterText] = useState('')
+  const items = filterText ? list.filter(r => r.label.toLocaleLowerCase().indexOf(filterText.toLocaleLowerCase().trim()) > -1) : list
+  let cardTitle = showLabel ? `${title} - 总 ${list.length} - 已选 ${value.length}` : `${title}`
 
-  render() {
-    const {
-      isCheck = false,
-      title,
-      list = [],
-      checkedList = [],
-      colNum = 1,
-      loading = false,
-    } = this.props;
-    const { selectKey, seachText } = this.state;
-    if (!isCheck) {
-      return (
-        <Spin spinning={loading}>
-          <div className={styles.header}>
-            <div className={styles.title}>{title}</div>
-            <div className={styles.seach}>
-              <Input onChange={this.onSeach} type={null} size="small" placeholder="输入关键词..." />
-            </div>
-            <div className={styles.body}>
-              {list.length ? this.renderSelectNodes(list, seachText, selectKey) : <Empty />}
-            </div>
-          </div>
-        </Spin>
-      );
+  const onSearch = debounce(val => {
+    setFilterText(val)
+  }, 500)
+  const onCheckAll = (all) => {
+    let all_v = items.map(r => r.value)
+    if (all) {
+      onChange(uniq([...value, ...all_v]))
     } else {
-      return (
-        <Spin spinning={loading}>
-          <div className={styles.header}>
-            <div className={styles.title}>{title}</div>
-            <div className={styles.seach}>
-              <Input onChange={this.onSeach} type={null} size="small" placeholder="输入关键词..." />
-              <span>
-                <a
-                  onClick={() => {
-                    this.onCheckAll(true);
-                  }}
-                >
-                  全选
-                </a>
-                <a
-                  onClick={() => {
-                    this.onCheckAll(false);
-                  }}
-                >
-                  全否
-                </a>
-              </span>
-            </div>
-            <div className={styles.body}>
-              {list.length ? (
-                <CheckboxGroup
-                  value={checkedList}
-                  onChange={this.onCheck}
-                  style={{ padding: '0 5px', width: '100%' }}
-                >
-                  {
-                    <Row>
-                      {list
-                        .filter(
-                          row =>
-                            row.label.toLocaleLowerCase().indexOf(seachText.toLocaleLowerCase()) >
-                            -1
-                        )
-                        .map((row, index) => {
-                          return (
-                            <Col span={24 / colNum} key={index}>
-                              <Checkbox value={row.value}>{row.label}</Checkbox>
-                            </Col>
-                          );
-                        })}
-                    </Row>
-                  }
-                </CheckboxGroup>
-              ) : (
-                <Empty />
-              )}
-            </div>
-          </div>
-        </Spin>
-      );
+      onChange(uniq([...value.filter(v => !all_v.includes(v))]))
     }
   }
-}
-export default DataSelect;
+  const checkChange = (id) => {
+    if (value.includes(id)) {
+      onChange([...value.filter(r => r != id)])
+    } else {
+      onChange([id, ...value])
+    }
+  }
+  return <Card
+    size="small"
+    title={cardTitle}
+    extra={[
+      showCheck ? (
+        <span key="checkAll" style={{ marginRight: 10 }}>
+          <a
+            onClick={() => {
+              onCheckAll(true);
+            }}
+          >
+            全选
+          </a>
+          <a
+            style={{ marginLeft: 10 }}
+            onClick={() => {
+              onCheckAll(false);
+            }}
+          >
+            全否
+          </a>
+        </span>
+      ) : null,
+      <Search
+        size="small"
+        placeholder="名称搜索..."
+        key="search"
+        onChange={e => onSearch(e.target.value)}
+        allowClear
+        style={{ width: 200 }}
+      />,
+    ]}
+    styles={{ body: bodyStyle }}
+  >
+    {items.length > 0 ? (
+      <>
+        {ext}
+        {chunk(items, chunkSpan).map((row, pindex) => {
+          return (
+            <Row key={'parent_' + pindex} gutter={16}>
+              {row.map(chil => {
+                return (
+                  <Col span={24 / chunkSpan} key={chil.value}>
+                    {chilRender ? (
+                      chilRender(chil)
+                    ) : (
+                      <Checkbox checked={value.includes(chil.value)} onChange={e => checkChange(chil.value)}>{chil.label}</Checkbox>
+                    )}
+                  </Col>
+                );
+              })}
+            </Row>
+          )
+        })}
+      </>
+    ) : (
+      <Empty style={{ height: '80%' }} imageStyle={{ height: '80%' }} />
+    )}
+  </Card>
+};

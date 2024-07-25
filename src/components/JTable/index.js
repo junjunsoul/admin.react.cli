@@ -219,8 +219,8 @@ const Page = forwardRef((props, ref) => {
       api.sizeColumnsToFit()
     }
   }
-  const onModelUpdated = () => {
-    if (isAutoSize) {
+  const onModelUpdated = ({newData}) => {
+    if (isAutoSize&&newData) {
       autoSizeColumns()
     }
   }
