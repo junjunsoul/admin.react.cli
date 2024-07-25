@@ -115,7 +115,7 @@ const Page = (props) => {
         dispatch,
         loading,
     } = props
-    const { authorized } = useOutletContext();
+    const { authorized } = useOutletContext()
     const [tableList, setList] = useState([])
     const tableRef = useRef(null)
     const formRef = useRef(null)

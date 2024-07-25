@@ -138,7 +138,7 @@ const Page = forwardRef((props, ref) => {
   //查询
   const quickFilter = value => {
     let api = tableRef?.current?.api
-    api.setQuickFilter(value.trim())
+    api.setGridOption('quickFilterText', value.trim())
   }
   //导出
   const onBtExport = () => {

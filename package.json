@@ -1,6 +1,6 @@
 {
   "private": true,
-  "author": "ljx@eyugame.com",
+  "author": "eyugame.com",
   "scripts": {
     "dev": "max dev",
     "build": "max build",
