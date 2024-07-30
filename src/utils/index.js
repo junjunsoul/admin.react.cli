@@ -51,3 +51,65 @@ export async function asyncPost(type, param = {}, dispatch) {
         })
     })
 }
+function loopColunm(columns) {
+    let col = [];
+    columns.map(item => {
+        if (item.children) {
+            col.push(...loopColunm(item.children));
+        } else {
+            col.push(item);
+        }
+    });
+    return col;
+}
+export function sumBy(list, key) {
+    let sum = 0
+    let isFloat = false
+    list.forEach((item) => {
+        let value = item[key]
+        if (!isFloat && /(-)|[0-9]+\.[0-9]+$/.test(value)) {
+            isFloat = true
+        }
+        let n = parseInt(value * 100)
+        if (n) {
+            sum += n
+        }
+    })
+
+    if (isFloat) {
+        if (sum) {
+            return (sum / 100).toFixed(2)
+        } else {
+            return sum.toFixed(2)
+        }
+    } else {
+        if (sum) {
+            return sum / 100
+        } else {
+            return 0
+        }
+    }
+}
+export function totalHandle(data, columns) {
+    const col = loopColunm(columns);
+    let total = {};
+    col.forEach(row => {
+        if (row.total) {
+            let value = sumBy(data, row.field);
+            if (value && (value + '').indexOf('.') > -1) {
+                value = Number(value).toFixed(2)
+            }
+            total[row.field] = value
+        }
+    });
+    return total;
+}
+export function randomWord(length) {
+    var str = "",
+        arr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+    for (var i = 0; i < length; i++) {
+        let pos = Math.round(Math.random() * (arr.length - 1));
+        str += arr[pos];
+    }
+    return str;
+}

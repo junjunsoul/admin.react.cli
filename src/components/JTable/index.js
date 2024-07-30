@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react'
+import { useState, useRef, useEffect, forwardRef, useImperativeHandle, useMemo } from 'react'
 import {
   Empty,
   Input,
@@ -11,10 +11,11 @@ import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-enterprise'
 import { AG_GRID_LOCALE_CN } from './locale'
 import dayjs from 'dayjs'
-import { find } from 'lodash'
-import { deepCopy } from '@/utils'
+import { find, debounce, isEmpty } from 'lodash'
+import { deepCopy, randomWord, totalHandle } from '@/utils'
 const Search = Input.Search
 const Page = forwardRef((props, ref) => {
+  const { cellRendererSelector = true } = props
   const {
     theme = 'custom',
     name = '',
@@ -58,7 +59,7 @@ const Page = forwardRef((props, ref) => {
       tooltipComponent: props => {
         return <div className="custom-tooltip">{props.value}</div>
       },
-      cellRendererSelector: props.cellRendererSelector ? (params) => {
+      cellRendererSelector: cellRendererSelector ? (params) => {
         if (params.node.rowPinned) {
           return {
             component: props => {
@@ -96,8 +97,10 @@ const Page = forwardRef((props, ref) => {
           },
         },
       ],
-    }
+    },
+    totalNextTick = null
   } = props
+  const [randomKey, setRandomKey] = useState('')
   const [height, setHeight] = useState(0)
   const [nH, setNH] = useState(0)
   let wrapRef = useRef()
@@ -139,6 +142,7 @@ const Page = forwardRef((props, ref) => {
   const quickFilter = value => {
     let api = tableRef?.current?.api
     api.setGridOption('quickFilterText', value.trim())
+    setVal()
   }
   //导出
   const onBtExport = () => {
@@ -202,7 +206,28 @@ const Page = forwardRef((props, ref) => {
       // 'export'
     ]
   }
+  const setVal = debounce(() => {
+    setRandomKey(randomWord(4))
+  }, 500)
+  const pinnedTopRowData = useMemo(() => {
+    let api = tableRef?.current?.api
+    if (!api) return null
+    let columnCus = api.getColumnDefs()
+    let dataList = [];
+    api.forEachNodeAfterFilter(node => {
+      dataList.push(node.data);
+    });
 
+    let total = totalHandle(dataList, columnCus);
+    if (isEmpty(total) || dataList.length == 0) {
+      return null;
+    }
+    if (totalNextTick) {
+      return [totalNextTick(total, dataList)]
+    } else {
+      return [total]
+    }
+  }, [randomKey])
   //列宽度自适应
   const autoSizeColumns = () => {
     let api = tableRef?.current?.api
@@ -219,9 +244,10 @@ const Page = forwardRef((props, ref) => {
       api.sizeColumnsToFit()
     }
   }
-  const onModelUpdated = ({newData}) => {
-    if (isAutoSize&&newData) {
+  const onModelUpdated = (params) => {
+    if (isAutoSize && params.newData) {
       autoSizeColumns()
+      setVal()
     }
   }
   return <Spin spinning={loading} delay={500}>
@@ -258,6 +284,7 @@ const Page = forwardRef((props, ref) => {
         onColumnPinned={saveLocal}
         enableRangeSelection={enableRangeSelection}
         onModelUpdated={onModelUpdated}
+        pinnedTopRowData={pinnedTopRowData}
         getContextMenuItems={getContextMenuItems}
         onProcessCellForClipboard={onProcessCellForClipboard}
         noRowsOverlayComponent={() => <Empty />}

@@ -1,3 +1,5 @@
+import { count } from "console";
+
 export default {
   'POST /api/login': (req: any, res: any) => {
     const { username, password } = req.body
@@ -49,10 +51,10 @@ export default {
     res.json({
       code: 200,
       data: [
-        { route: '/api/getApiList', name: '接口清单', description: '这是个接口' },
-        { route: '/api/addApi', name: '接口清单', description: '这是个接口' },
-        { route: '/api/editApi', name: '接口清单', description: '这是个接口' },
-        { route: '/api/getApiMenuInfo', name: '接口清单', description: '这是个接口' },
+        { route: '/api/getApiList', name: '接口清单', description: '这是个接口',count:20 },
+        { route: '/api/addApi', name: '接口清单', description: '这是个接口',count:30 },
+        { route: '/api/editApi', name: '接口清单', description: '这是个接口',count:30 },
+        { route: '/api/getApiMenuInfo', name: '接口清单', description: '这是个接口',count:30 },
       ]
     })
   },

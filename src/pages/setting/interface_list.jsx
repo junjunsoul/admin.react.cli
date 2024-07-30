@@ -158,6 +158,7 @@ const Page = (props) => {
             callback: response => {
                 if (response.code == 200) {
                     setList(response.data)
+                    
                 }
             }
         })
@@ -191,6 +192,7 @@ const Page = (props) => {
     const columnCus = [
         { headerName: '接口地址', suppressHeaderMenuButton: false, field: 'route' },
         { headerName: '名称', field: 'name' },
+        { headerName: '访问次数', field: 'count',total:true },
         { headerName: '接口描述', field: 'description' },
     ]
     if (authorized['store']) {
@@ -212,6 +214,10 @@ const Page = (props) => {
                 columnCus={columnCus}
                 rowData={tableList}
                 loading={loading[URL_M['list']]}
+                totalNextTick={(total,dataList)=>{
+                    total.route = '汇总'
+                    return total
+                }}
             />
         </div>
         <FormLayout ref={formRef} {...props} reload={tableReloader} />
