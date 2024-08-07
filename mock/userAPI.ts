@@ -1,4 +1,5 @@
 import { count } from "console";
+import interface_list from "../src/pages/setting/interface_list";
 
 export default {
   'POST /api/login': (req: any, res: any) => {
@@ -51,10 +52,10 @@ export default {
     res.json({
       code: 200,
       data: [
-        { route: '/api/getApiList', name: '接口清单', description: '这是个接口',count:20 },
-        { route: '/api/addApi', name: '接口清单', description: '这是个接口',count:30 },
-        { route: '/api/editApi', name: '接口清单', description: '这是个接口',count:30 },
-        { route: '/api/getApiMenuInfo', name: '接口清单', description: '这是个接口',count:30 },
+        { route: '/api/getApiList', name: '接口清单', description: '这是个接口', count: 20 },
+        { route: '/api/addApi', name: '接口清单', description: '这是个接口', count: 30 },
+        { route: '/api/editApi', name: '接口清单', description: '这是个接口', count: 30 },
+        { route: '/api/getApiMenuInfo', name: '接口清单', description: '这是个接口', count: 30 },
       ]
     })
   },
@@ -67,11 +68,11 @@ export default {
   'POST /api/getApiInfo': (req: any, res: any) => {
     res.json({
       code: 200,
-      data: { 
-        route: '/api/getApiList', 
+      data: {
+        route: '/api/getApiList',
         name: '接口清单',
         description: '这是个接口',
-        role_ids:[1,25,66]
+        role_ids: [1, 25, 66]
       }
     })
   },
@@ -93,4 +94,37 @@ export default {
       ]
     })
   },
+  'POST /api/roleList': (req: any, res: any)=>{
+    res.json({
+      code: 200,
+      data: [
+        { role_id: 1, role_name: "超级管理员", status: 1, users: 10 },
+        { role_id: 25, role_name: "测试", status: 1, users: 10 },
+        { role_id: 50, role_name: "设计师", status: 1, users: 10 },
+        { role_id: 51, role_name: "优化师", status: 0, users: 10 },
+        { role_id: 69, role_name: "渠道运营", status: 0, users: 10 },
+      ]
+    })
+  },
+  'POST /api/roleStore': (req: any, res: any)=>{
+    res.json({
+      code: 200
+    })
+  },
+  'POST /api/roleInfo':(req:any,res:any)=>{
+    res.json({
+      code:200,
+      data:{
+        role_id:1,
+        role_name: "超级管理员", 
+        status: 1,
+        interface_list:[
+          '/api/getApiList',
+          '/api/storeApi',
+          '/api/roleSelect',
+          '/api/getApiInfo',
+        ]
+      }
+    })
+  }
 };

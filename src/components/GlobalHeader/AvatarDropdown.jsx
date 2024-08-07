@@ -1,4 +1,5 @@
 import { Avatar, Dropdown } from 'antd';
+import { useIntl } from '@umijs/max'
 import React from 'react';
 import styles from './index.less';
 function AvatarDropdown(props) {
@@ -6,6 +7,7 @@ function AvatarDropdown(props) {
     dispatch,
     currentUser,
   } = props
+  const intl = useIntl();
   const onMenuClick = event => {
     const { key } = event;
     if (key === 'logout') {
@@ -17,7 +19,9 @@ function AvatarDropdown(props) {
   };
   const items = [
     {
-      label: '退出登录',
+      label: intl.formatMessage({
+        id: 'navBar.logout',
+      }),
       key: 'logout',
     }
   ];

@@ -1,7 +1,6 @@
 import { notification,message } from 'antd';
 import { history } from '@umijs/max';
 import { deepCopy } from '@/utils';
-import { map } from 'lodash'
 import Qs from 'qs';
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
