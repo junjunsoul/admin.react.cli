@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, forwardRef, useImperativeHandle, useMemo } from 'react'
+import { useState, useRef, useEffect, forwardRef, useImperativeHandle, useMemo,useCallback,memo } from 'react'
 import {
   Empty,
   Input,
@@ -14,7 +14,7 @@ import dayjs from 'dayjs'
 import { find, debounce, isEmpty } from 'lodash'
 import { deepCopy, randomWord, totalHandle } from '@/utils'
 const Search = Input.Search
-const Page = forwardRef((props, ref) => {
+const Page = memo(forwardRef((props, ref) => {
   const { cellRendererSelector = true } = props
   const {
     theme = 'custom',
@@ -159,18 +159,18 @@ const Page = forwardRef((props, ref) => {
     })
   }
   //复制
-  const onProcessCellForClipboard = params => {
+  const onProcessCellForClipboard = useCallback(params => {
     if (formatCus && formatCus[params.column.colId]) {
       return formatCus[params.column.colId](params)
     } else {
       return params.value
     }
-  }
+  },[])
   //缓存列
   const getLocal = () => {
     return JSON.parse(localStorage.getItem(tbKey) || null)
   }
-  const saveLocal = () => {
+  const saveLocal = useCallback(() => {
     let api = tableRef?.current?.api
     if (tbKey) {
       const colums = api.getColumns().map(row => {
@@ -182,7 +182,7 @@ const Page = forwardRef((props, ref) => {
       })
       localStorage.setItem(tbKey, JSON.stringify(colums))
     }
-  }
+  },[])
   const loopColum = row => {
     const local = getLocal()
     if (row.children) {
@@ -199,13 +199,13 @@ const Page = forwardRef((props, ref) => {
   const getColumns = () => {
     return deepCopy(columnCus).map(row => loopColum(row))
   }
-  const getContextMenuItems = (params) => {
+  const getContextMenuItems = useCallback((params) => {
     return [
       'copy',
       'copyWithHeaders',
       // 'export'
     ]
-  }
+  },[])
   //汇总
   const setVal = debounce(() => {
     setRandomKey(randomWord(4))
@@ -228,7 +228,7 @@ const Page = forwardRef((props, ref) => {
     } else {
       return [total]
     }
-  }, [randomKey])
+  }, [randomKey,rowData])
   //列宽度自适应
   const autoSizeColumns = () => {
     let api = tableRef?.current?.api
@@ -245,12 +245,12 @@ const Page = forwardRef((props, ref) => {
       api.sizeColumnsToFit()
     }
   }
-  const onModelUpdated = (params) => {
+  const onModelUpdated = useCallback((params) => {
     if (isAutoSize && params.newData) {
       autoSizeColumns()
       setVal()
     }
-  }
+  },[])
   return <Spin spinning={loading} delay={500}>
     {!hideHeaderBar && (
       <div style={{ display: 'flex', padding: '5px 0', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -295,5 +295,5 @@ const Page = forwardRef((props, ref) => {
       />
     </div>
   </Spin>
-})
+}))
 export default Page

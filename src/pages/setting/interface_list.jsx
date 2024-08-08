@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react'
+import { useState, useEffect, useRef, forwardRef, useImperativeHandle,memo } from 'react'
 import { useOutletContext, connect } from '@umijs/max'
 import {
     Divider,
@@ -21,7 +21,7 @@ const URL_M = {
     roleSelect: 'setting/roleSelect',
 }
 const pageName = '接口清单'
-const FormLayout = forwardRef((props, ref) => {
+const FormLayout = memo(forwardRef((props, ref) => {
     const {
         reload,
         loading = [],
@@ -138,7 +138,7 @@ const FormLayout = forwardRef((props, ref) => {
             </Form.Item>
         </Form>
     </Modal>
-})
+}))
 
 const Page = (props) => {
     const {
@@ -213,6 +213,7 @@ const Page = (props) => {
                 name={pageName}
                 columnCus={columnCus}
                 rowData={tableList}
+                tbKey="/setting/interface_list"
                 loading={loading[URL_M['list']]}
                 totalNextTick={(total,dataList)=>{
                     total.route = '汇总'

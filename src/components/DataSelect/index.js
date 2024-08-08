@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, memo } from 'react';
 import { Input, Checkbox, Row, Col, Empty, Card } from 'antd';
 import { chunk, debounce, uniq } from 'lodash';
 const { Search } = Input;
 
-export default (props) => {
+export default memo((props) => {
   const {
     list = [],
     value = [],
@@ -17,27 +17,31 @@ export default (props) => {
     onChange = () => { }
   } = props
   const [filterText, setFilterText] = useState('')
-  const items = filterText ? list.filter(r => r.label.toLocaleLowerCase().indexOf(filterText.toLocaleLowerCase().trim()) > -1) : list
+
+  const items = useMemo(() => {
+    return filterText ? list.filter(r => r.label.toLocaleLowerCase().indexOf(filterText.toLocaleLowerCase().trim()) > -1) : list
+  }, [filterText, list.length])
+
   let cardTitle = showLabel ? `${title} - 总 ${list.length} - 已选 ${value.length}` : `${title}`
 
   const onSearch = debounce(val => {
     setFilterText(val)
-  }, 500)
-  const onCheckAll = (all) => {
+  }, 300)
+  const onCheckAll = useCallback((all) => {
     let all_v = items.map(r => r.value)
     if (all) {
       onChange(uniq([...value, ...all_v]))
     } else {
       onChange(uniq([...value.filter(v => !all_v.includes(v))]))
     }
-  }
-  const checkChange = (id) => {
+  }, [])
+  const checkChange = useCallback((id) => {
     if (value.includes(id)) {
       onChange([...value.filter(r => r != id)])
     } else {
       onChange([id, ...value])
     }
-  }
+  }, [])
   return <Card
     size="small"
     title={cardTitle}
@@ -72,7 +76,7 @@ export default (props) => {
     ]}
     styles={{ body: bodyStyle }}
   >
-    {items.length > 0 ? (
+    {items.length > 0 ?
       <>
         {ext}
         {chunk(items, chunkSpan).map((row, pindex) => {
@@ -92,9 +96,8 @@ export default (props) => {
             </Row>
           )
         })}
-      </>
-    ) : (
-      <Empty style={{ height: '80%' }} imageStyle={{ height: '80%' }} />
-    )}
+      </> : <div style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Empty style={{ height: '70%' }} imageStyle={{ height: '70%' }} />
+      </div>}
   </Card>
-};
+})
