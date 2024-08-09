@@ -31,15 +31,10 @@ export default {
     ],
     //角色管理 
     '/setting/role_manage':[
-        setting.roleSelect.url
+        setting.roleList.url
     ],
-    '/setting/role_manage#add':[setting.roleCreate.url],
-    '/setting/role_manage#edit':[
-        setting.roleUpdate.url,
-        setting.roleRead.url,
-        setting.authorizeApiMenu.url,
-        setting.getApiList.url,
-        setting.getRoleAuthApiList.url,
-    ],
-    '/setting/role_manage#del':[setting.roleDelete.url],
+    '/setting/role_manage#store':[
+        setting.roleStore.url,
+        setting.roleInfo.url,
+    ]
 }

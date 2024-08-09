@@ -20,6 +20,18 @@ export default {
       const response = yield call(post, api.roleSelect.url, payload);
       callback && callback(response);
     },
+    *roleList({ payload, callback }, { call, put }) {
+      const response = yield call(post, api.roleList.url, payload);
+      callback && callback(response);
+    },
+    *roleStore({ payload, callback }, { call, put }) {
+      const response = yield call(post, api.roleStore.url, payload);
+      callback && callback(response);
+    },
+    *roleInfo({ payload, callback }, { call, put }) {
+      const response = yield call(post, api.roleInfo.url, payload);
+      callback && callback(response);
+    },
     *commonUrl({ payload, url, callback }, { call, put }) {
       const response = yield call(post, url, payload);
       callback && callback(response);

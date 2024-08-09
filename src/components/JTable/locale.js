@@ -72,8 +72,8 @@ export const AG_GRID_LOCALE_CN = {
     rowDragRows: 'rows',
   
     // Other
-    loadingOoo: 'Loading...',
-    loadingError: 'ERR',
+    loadingOoo: '加载中...',
+    loadingError: '加载失败...',
     noRowsToShow: 'No Rows To Show',
     enabled: 'Enabled',
   
@@ -108,7 +108,7 @@ export const AG_GRID_LOCALE_CN = {
     excelExport: 'XLS 文件',
   
     // Enterprise Menu Aggregation and Status Bar
-    sum: '总和',
+    sum: '汇总',
     first: 'First',
     last: 'Last',
     min: '最小值',
@@ -120,15 +120,15 @@ export const AG_GRID_LOCALE_CN = {
     selectedRows: '已选',
     totalRows: '总计',
     totalAndFilteredRows: 'Rows',
-    more: 'More',
-    to: 'to',
-    of: 'of',
-    page: 'Page',
+    more: '更多',
+    to: '-',
+    of: '共',
+    page: '页码',
     pageLastRowUnknown: '?',
-    nextPage: 'Next Page',
-    lastPage: 'Last Page',
-    firstPage: 'First Page',
-    previousPage: 'Previous Page',
+    nextPage: '下一页',
+    lastPage: '最后一页',
+    firstPage: '首页',
+    previousPage: '上一页',
   
     // Pivoting
     pivotColumnGroupTotals: 'Total',

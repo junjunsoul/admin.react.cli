@@ -39,6 +39,9 @@ export default {
             '/api/storeApi',
             '/api/roleSelect',
             '/api/getApiInfo',
+            '/api/roleList',
+            '/api/roleStore',
+            '/api/roleInfo',
           ]
         }
       });
@@ -96,14 +99,16 @@ export default {
   },
   'POST /api/roleList': (req: any, res: any)=>{
     res.json({
-      code: 200,
+      code: 201,
+      recurdsTotal:5,
       data: [
         { role_id: 1, role_name: "超级管理员", status: 1, users: 10 },
         { role_id: 25, role_name: "测试", status: 1, users: 10 },
         { role_id: 50, role_name: "设计师", status: 1, users: 10 },
         { role_id: 51, role_name: "优化师", status: 0, users: 10 },
         { role_id: 69, role_name: "渠道运营", status: 0, users: 10 },
-      ]
+      ],
+      total:{role_name:'汇总',users:100},
     })
   },
   'POST /api/roleStore': (req: any, res: any)=>{

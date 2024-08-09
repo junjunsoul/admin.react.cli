@@ -36,50 +36,21 @@ export default {
         "title": "获取角色详细信息",
         "url": "/v1/role/read"
     },
-    roleSelect: {
+    
+    //角色管理
+    roleList: {
         "title": "角色列表",
-        "url": "/v1/role/select"
+        "url": "/api/roleList"
     },
-    roleCreate: {
-        "title": "角色新增",
-        "url": "/v1/role/create"
+    roleStore: {
+        "title": "角色存储",
+        "url": "/api/roleStore"
     },
-    roleUpdate: {
-        "title": "角色修改",
-        "url": "/v1/role/update"
+    roleInfo: {
+        "title": "角色信息",
+        "url": "/api/roleInfo"
     },
-    roleDelete: {
-        "title": "角色删除",
-        "url": "/v1/role/delete"
-    },
-    getRoleAuthApiList: {
-        "title": "获取角色授权信息",
-        "url": "/v1/Role/getRoleAuthApiList"
-    },
-    roleAuth: {
-        "title": "角色修改",
-        "url": "/v1/AdminRole/auth"
-    },
-    getAppMaterialAuth: {
-        "title": "获取权限",
-        "url": "/v1/App/getAppMaterialAuth"
-    },
-    setAppMaterialAuth: {
-        "title": "保存权限",
-        "url": "/v1/App/setAppMaterialAuth"
-    },
-    reverseRoleList: {
-        "title": "获取权限",
-        "url": "/v1/user/reverseRoleList"
-    },
-    reverseRole: {
-        "title": "保存权限",
-        "url": "/v1/user/reverseRole"
-    },
-    authorizeApiMenu: {
-        "title": "角色授权",
-        "url": "/v1/Role/authorizeApiMenu"
-    },
+    //接口清单
     getApiList: {
         "title": "接口清单",
         "url": "/api/getApiList"
@@ -96,8 +67,4 @@ export default {
         "title": "接口清单",
         "url": "/api/getApiInfo"
     },
-    authorizeRole: {
-        "title": "接口清单",
-        "url": "/api/authorizeRole"
-    }, 
 }

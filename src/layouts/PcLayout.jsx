@@ -1,11 +1,12 @@
 import { Outlet, Helmet, useLocation, useSelectedRoutes,Link } from '@umijs/max';
+import { memo } from 'react'
 import Footer from '@/components/Footer'
 import { Button, Result } from 'antd';
 import { find } from 'lodash'
 import TopNavHeader from '@/components/TopNavHeader';
 import { checkAuth, getFMFuzzy } from '@/authority/auth';
 import logo from '@/assets/logo.svg'
-function Authorized(props) {
+const Authorized = memo((props)=> {
     const {
         authority = []
     } = props
@@ -25,7 +26,7 @@ function Authorized(props) {
             }
         />
     }
-}
+})
 function Page(props) {
     const {
         documentTitle

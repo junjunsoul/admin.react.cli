@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, forwardRef, useImperativeHandle,memo } from 'react'
+import { useState, useEffect, useRef, forwardRef, useImperativeHandle,memo,useCallback } from 'react'
 import { useOutletContext, connect } from '@umijs/max'
 import {
     Divider,
@@ -56,7 +56,7 @@ const FormLayout = memo(forwardRef((props, ref) => {
             }
         }
     }
-    const okHandle = () => {
+    const okHandle = useCallback(() => {
         formRef.current.validateFields().then(async (fieldsValue) => {
             let result = { ...fieldsValue };
             const res = await asyncPost(URL_M['store'], result, dispatch)
@@ -65,10 +65,10 @@ const FormLayout = memo(forwardRef((props, ref) => {
                 onCancel()
             }
         })
-    }
-    const onCancel = () => {
+    })
+    const onCancel = useCallback(() => {
         setVisible(false)
-    }
+    },[])
     const dist = {
         add: '添加',
         update: '更新',
