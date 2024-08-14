@@ -46,7 +46,6 @@ function AuthTree(props) {
       result = uniq([...value, ...interfaces])
     }
     onChange(result)
-    return result
   }
   return <>
     <div><Checkbox indeterminate={selectKeys.length > 0 && selectKeys.length < authKeys.length} checked={selectKeys.length == authKeys.length} onChange={e => checkAll(e.target.checked)}>{item.title}</Checkbox></div>

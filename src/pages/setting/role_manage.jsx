@@ -153,7 +153,6 @@ const AuthLayout = memo(forwardRef((props, ref) => {
             ref={formRef}
             initialValues={initialValues}
         >
-            {/* <Form.Item name="role_id" hidden /> */}
             <Form.Item
                 noStyle
                 name="interface_list"
