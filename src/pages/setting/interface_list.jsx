@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, forwardRef, useImperativeHandle,memo,useCallback } from 'react'
+import { useState, useEffect, useRef, forwardRef, useImperativeHandle, memo, useCallback } from 'react'
 import { useOutletContext, connect } from '@umijs/max'
 import {
     Divider,
@@ -50,7 +50,7 @@ const FormLayout = memo(forwardRef((props, ref) => {
     }
     const getRoleSelect = async () => {
         if (roleList.length == 0) {
-            const res =await asyncPost(URL_M['roleSelect'], {}, dispatch)
+            const res = await asyncPost(URL_M['roleSelect'], {}, dispatch)
             if (res.code == 200) {
                 setRoleList(res.data)
             }
@@ -68,7 +68,7 @@ const FormLayout = memo(forwardRef((props, ref) => {
     })
     const onCancel = useCallback(() => {
         setVisible(false)
-    },[])
+    }, [])
     const dist = {
         add: '添加',
         update: '更新',
@@ -158,7 +158,7 @@ const Page = (props) => {
             callback: response => {
                 if (response.code == 200) {
                     setList(response.data)
-                    
+
                 }
             }
         })
@@ -168,15 +168,15 @@ const Page = (props) => {
         formRef.current.add({})
     }
     const handleUpdate = async data => {
-        const res = await asyncPost(URL_M['getApiInfo'],{},dispatch)
-        if(res.code==200){
+        const res = await asyncPost(URL_M['getApiInfo'], {}, dispatch)
+        if (res.code == 200) {
             formRef.current.edit(res.data)
         }
     }
     const handleCopy = async data => {
-        const res = await asyncPost(URL_M['getApiInfo'],{},dispatch)
-        if(res.code==200){
-            formRef.current.add({role_ids:res.data.role_ids})
+        const res = await asyncPost(URL_M['getApiInfo'], {}, dispatch)
+        if (res.code == 200) {
+            formRef.current.add({ role_ids: res.data.role_ids })
         }
     }
     const actionRenderer = (props) => {
@@ -192,7 +192,7 @@ const Page = (props) => {
     const columnCus = [
         { headerName: '接口地址', suppressHeaderMenuButton: false, field: 'route' },
         { headerName: '名称', field: 'name' },
-        { headerName: '访问次数', field: 'count',total:true },
+        { headerName: '访问次数', field: 'count', total: true },
         { headerName: '接口描述', field: 'description' },
     ]
     if (authorized['store']) {
@@ -215,7 +215,7 @@ const Page = (props) => {
                 rowData={tableList}
                 tbKey="/setting/interface_list"
                 loading={loading[URL_M['list']]}
-                totalNextTick={(total,dataList)=>{
+                totalNextTick={(total, dataList) => {
                     total.route = '汇总'
                     return total
                 }}

@@ -26,7 +26,6 @@ export function deepCopy(data) {
     } else {
         return data;
     }
-
     if (t === 'array') {
         for (let i = 0; i < data.length; i++) {
             o.push(deepCopy(data[i]));

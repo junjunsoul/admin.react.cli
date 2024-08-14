@@ -1,6 +1,3 @@
-import { count } from "console";
-import interface_list from "../src/pages/setting/interface_list";
-
 export default {
   'POST /api/login': (req: any, res: any) => {
     const { username, password } = req.body
@@ -42,6 +39,7 @@ export default {
             '/api/roleList',
             '/api/roleStore',
             '/api/roleInfo',
+            '/api/roleAuthInfo',
           ]
         }
       });
@@ -99,7 +97,7 @@ export default {
   },
   'POST /api/roleList': (req: any, res: any)=>{
     res.json({
-      code: 201,
+      code: 200,
       recurdsTotal:5,
       data: [
         { role_id: 1, role_name: "超级管理员", status: 1, users: 10 },
@@ -122,14 +120,25 @@ export default {
       data:{
         role_id:1,
         role_name: "超级管理员", 
-        status: 1,
+        status: 1
+      }
+    })
+  },
+  'POST /api/roleAuthInfo':(req:any,res:any)=>{
+    res.json({
+      code:200,
+      data:{
+        role_id:1,
+        role_name: "超级管理员",
         interface_list:[
           '/api/getApiList',
           '/api/storeApi',
+          '/api/roleList',
           '/api/roleSelect',
           '/api/getApiInfo',
+          '/api/roleAuthInfo'
         ]
       }
     })
-  }
+  },
 };

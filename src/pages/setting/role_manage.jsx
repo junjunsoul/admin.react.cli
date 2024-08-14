@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, forwardRef, useImperativeHandle, memo, useCallback } from 'react'
+import { useState, useRef, forwardRef, useImperativeHandle, memo, useCallback } from 'react'
 import { useOutletContext, connect } from '@umijs/max'
 import {
     Divider,
@@ -7,18 +7,22 @@ import {
     Modal,
     Form,
     Input,
+    Switch,
+    Drawer,
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { asyncPost } from '@/utils'
 import STable from '@/components/JTable/server'
 import PageHeaderWrapper from '@/components/PageHeaderWrapper'
+import Auth from './components/auth'
 const { TextArea } = Input
 const URL_M = {
     list: 'setting/roleList',
     store: 'setting/roleStore',
-    getApiInfo: 'setting/roleInfo'
+    roleInfo: 'setting/roleInfo',
+    roleAuthInfo: 'setting/roleAuthInfo'
 }
-const pageName = '角色管理'
+const pageName = '角色信息'
 const FormLayout = memo(forwardRef((props, ref) => {
     const {
         reload,
@@ -88,19 +92,20 @@ const FormLayout = memo(forwardRef((props, ref) => {
             initialValues={initialValues}
         >
             <Form.Item
-                label="接口地址"
-                name="route"
-                rules={[{ required: true }]}
-            >
-                <Input placeholder="请输入" />
-            </Form.Item>
-            <Form.Item
-                label="名称"
+                label="角色名"
                 name="name"
                 rules={[{ required: true }]}
             >
                 <Input placeholder="请输入" />
             </Form.Item>
+            <Form.Item
+                label="状态"
+                name="status"
+                valuePropName="checked"
+            >
+                <Switch checkedChildren="启用" unCheckedChildren="禁用" />
+            </Form.Item>
+
             <Form.Item
                 label="描述"
                 name="description"
@@ -110,7 +115,54 @@ const FormLayout = memo(forwardRef((props, ref) => {
         </Form>
     </Modal>
 }))
-
+const AuthLayout = memo(forwardRef((props, ref) => {
+    const {
+        loading,
+        dispatch
+    } = props
+    const [open, setOpen] = useState(false)
+    const [initialValues, setInitialValues] = useState({})
+    const formRef = useRef(null)
+    useImperativeHandle(ref, () => ({
+        auth,
+    }))
+    const auth = async (role_id) => {
+        setOpen(true)
+        const res = await asyncPost(URL_M['roleAuthInfo'], { role_id }, dispatch)
+        if (res.code == 200) {
+            setInitialValues(res.data)
+        }
+    }
+    return <Drawer
+        closable
+        destroyOnClose
+        title={`${initialValues.role_name}-菜单授权`}
+        placement="right"
+        open={open}
+        size={'large'}
+        loading={loading[URL_M['roleAuthInfo']]}
+        extra={
+            <Space>
+                <Button>取消</Button>
+                <Button type="primary">提交</Button>
+            </Space>
+        }
+        onClose={() => setOpen(false)}>
+        <Form
+            layout="vertical"
+            ref={formRef}
+            initialValues={initialValues}
+        >
+            {/* <Form.Item name="role_id" hidden /> */}
+            <Form.Item
+                noStyle
+                name="interface_list"
+            >
+                <Auth />
+            </Form.Item>
+        </Form>
+    </Drawer>
+}))
 const Page = (props) => {
     const {
         dispatch,
@@ -119,16 +171,18 @@ const Page = (props) => {
     const { authorized } = useOutletContext()
     const tableRef = useRef(null)
     const formRef = useRef(null)
+    const authRef = useRef(null)
     const onGridReady = useCallback(params => {
         tableRef.current = params.api
         tableReloader()
     }, [])
-    const tableReloader = () => {
+    const tableReloader = (vlaues) => {
         const dataSource = {
             getRows: (params) => {
                 dispatch({
                     type: URL_M['list'],
                     payload: {
+                        ...vlaues,
                         ...params.request
                     },
                     callback: response => {
@@ -138,8 +192,8 @@ const Page = (props) => {
                                 rowData: data,
                                 rowCount: recurdsTotal,
                             })
-                            tableRef.current.setGridOption('pinnedTopRowData', total&&[total])                                
-                        }else{
+                            tableRef.current.setGridOption('pinnedTopRowData', total && [total])
+                        } else {
                             params.fail()
                         }
                     }
@@ -153,16 +207,19 @@ const Page = (props) => {
         formRef.current.add({})
     }
     const handleUpdate = async data => {
-        const res = await asyncPost(URL_M['getApiInfo'], {}, dispatch)
+        const res = await asyncPost(URL_M['roleInfo'], {}, dispatch)
         if (res.code == 200) {
             formRef.current.edit(res.data)
         }
     }
     const handleCopy = async data => {
-        const res = await asyncPost(URL_M['getApiInfo'], {}, dispatch)
+        const res = await asyncPost(URL_M['roleInfo'], {}, dispatch)
         if (res.code == 200) {
-            formRef.current.add({ role_ids: res.data.role_ids })
+            formRef.current.add({ role_id: res.data.role_id })
         }
+    }
+    const handleAuth = async data => {
+        authRef.current.auth({ role_id: data.role_id })
     }
     const actionRenderer = (props) => {
         const {
@@ -171,11 +228,12 @@ const Page = (props) => {
         return <Space split={<Divider type="vertical" />}>
             <a onClick={() => handleUpdate(data)}>修改</a>
             <a onClick={() => handleCopy(data)}>复制</a>
+            <a onClick={() => handleAuth(data)}>授权</a>
         </Space >
     }
     const searchBar = authorized['store'] && <Button onClick={handleAdd} icon={<PlusOutlined />} type="primary"> 新建 </Button>
     const columnCus = [
-        { headerName: '名称',suppressHeaderMenuButton: false, field: 'role_name' },
+        { headerName: '角色名称', suppressHeaderMenuButton: false, field: 'role_name' },
         { headerName: '用户数量', sortable: true, field: 'users', total: true },
     ]
     if (authorized['store']) {
@@ -193,12 +251,12 @@ const Page = (props) => {
             <STable
                 searchBar={searchBar}
                 columnCus={columnCus}
-                tbKey="/setting/role_manage"
                 onGridReady={onGridReady}
                 loading={loading[URL_M['list']]}
             />
         </div>
         <FormLayout ref={formRef} {...props} reload={tableReloader} />
+        <AuthLayout ref={authRef} {...props} />
     </PageHeaderWrapper>
 }
 export default connect(({ loading }) => ({ loading: loading.effects }))(Page)

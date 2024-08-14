@@ -36,5 +36,6 @@ export default {
     '/setting/role_manage#store':[
         setting.roleStore.url,
         setting.roleInfo.url,
+        setting.roleAuthInfo.url,
     ]
 }

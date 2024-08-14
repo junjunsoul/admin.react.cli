@@ -50,6 +50,10 @@ export default {
         "title": "角色信息",
         "url": "/api/roleInfo"
     },
+    roleAuthInfo: {
+        "title": "角色信息",
+        "url": "/api/roleAuthInfo"
+    },
     //接口清单
     getApiList: {
         "title": "接口清单",

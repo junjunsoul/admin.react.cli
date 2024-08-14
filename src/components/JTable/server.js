@@ -89,7 +89,7 @@ const Page = memo(forwardRef((props, ref) => {
       ],
     },
   } = props
-  const [height, setHeight] = useState(0)
+  const [height, setHeight] = useState(400)
   const [nH, setNH] = useState(0)
   let wrapRef = useRef()
   let tableRef = useRef()

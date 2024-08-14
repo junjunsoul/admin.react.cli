@@ -32,6 +32,10 @@ export default {
       const response = yield call(post, api.roleInfo.url, payload);
       callback && callback(response);
     },
+    *roleAuthInfo({ payload, callback }, { call, put }) {
+      const response = yield call(post, api.roleAuthInfo.url, payload);
+      callback && callback(response);
+    },
     *commonUrl({ payload, url, callback }, { call, put }) {
       const response = yield call(post, url, payload);
       callback && callback(response);

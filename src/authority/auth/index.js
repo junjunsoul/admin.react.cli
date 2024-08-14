@@ -1,6 +1,6 @@
 import topMenu from './top_menu'
 import { deepCopy } from '@/utils'
-import FM from './auth_map'
+import FM from './orm'
 export const getFM = key => {
     return FM[key];
 };
