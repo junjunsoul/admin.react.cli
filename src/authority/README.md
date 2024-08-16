@@ -3,11 +3,11 @@
 ```html
 目录结构
 authority
-	-auth     				--授权模块
+    -auth     				--授权模块
 		-auth_menu			--授权菜单数据结构
 		-orm				--页面与接口的绑定关系结构
         -top_menu			--显示导航菜单数据结构
-	-services 				--接口集合
+    -services 				--接口集合
 ```
 #### 配置信息
 
