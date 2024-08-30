@@ -38,7 +38,7 @@ const Page = memo(forwardRef((props, ref) => {
       statusPanels: [
         {
           statusPanel: 'agTotalRowCountComponent',
-          align: 'left',
+          align: 'right',
         },
         { statusPanel: 'agFilteredRowCountComponent' },
         { statusPanel: 'agSelectedRowCountComponent' },
@@ -289,6 +289,7 @@ const Page = memo(forwardRef((props, ref) => {
         getContextMenuItems={getContextMenuItems}
         onProcessCellForClipboard={onProcessCellForClipboard}
         noRowsOverlayComponent={() => <Empty />}
+        columnHoverHighlight={true}
         statusBar={statusBar}
         context={context}
         rowData={rowData}

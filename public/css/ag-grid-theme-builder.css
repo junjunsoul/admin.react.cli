@@ -58,9 +58,9 @@
 	--ag-grid-size: var(--ag-inherited-grid-size, 8px);
 	--ag-font-size: var(--ag-inherited-font-size, 14px);
 	--ag-row-height: var(--ag-inherited-row-height, calc(max(var(--ag-icon-size), var(--ag-font-size)) + var(--ag-grid-size) * 3.5 * var(--ag-row-vertical-padding-scale)));
-	--ag-row-vertical-padding-scale: var(--ag-inherited-row-vertical-padding-scale, 0.8);
+	--ag-row-vertical-padding-scale: var(--ag-inherited-row-vertical-padding-scale, 0.7);
 	--ag-header-height: var(--ag-inherited-header-height, calc(max(var(--ag-icon-size), var(--ag-font-size)) + var(--ag-grid-size) * 4.25 * var(--ag-header-vertical-padding-scale)));
-	--ag-header-vertical-padding-scale: var(--ag-inherited-header-vertical-padding-scale, 0.8);
+	--ag-header-vertical-padding-scale: var(--ag-inherited-header-vertical-padding-scale, 0.7);
 	--ag-popup-shadow: var(--ag-inherited-popup-shadow, 0 0 16px 0 #00000026);
 	--ag-dropdown-shadow: var(--ag-inherited-dropdown-shadow, 0 1px 4px 1px #babfc766);
 	--ag-drag-ghost-background-color: var(--ag-inherited-drag-ghost-background-color, var(--ag-background-color));

@@ -211,6 +211,7 @@ const Page = memo(forwardRef((props, ref) => {
         noRowsOverlayComponent={() => <Empty />}
         pagination={true}
         paginationAutoPageSize={true}
+        columnHoverHighlight={true}
         onGridReady={onGridReady}
         context={context}
         // statusBar={statusBar}
