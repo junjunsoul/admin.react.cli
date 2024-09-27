@@ -1,0 +1,31 @@
+.left{
+    position: fixed;
+    top: 64px;
+    z-index: 2;
+    height: calc(100% - 64px);
+    background: #f0f2f5;
+    display: flex;
+    width: 256px;
+    :global{
+        .ant-menu-light{
+            background: transparent;
+        }
+        .ant-menu-submenu{
+            .ant-menu-submenu-title{
+                color: rgba(0, 0, 0, 0.6);
+            }
+        }
+        .ant-menu-submenu-selected{
+            .ant-menu-submenu-title{
+                color: rgba(0, 0, 0, 0.95);
+            }
+        }
+        .ant-menu-item{
+            color: rgba(0, 0, 0, 0.6);
+        }
+        .ant-menu-item-selected{
+            background-color: rgba(0, 0, 0, 0.04);
+            color: rgba(0, 0, 0, 0.95);
+        }
+    }
+}

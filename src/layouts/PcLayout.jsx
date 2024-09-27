@@ -4,6 +4,7 @@ import Footer from '@/components/Footer'
 import { Button, Result } from 'antd';
 import { find } from 'lodash'
 import TopNavHeader from '@/components/TopNavHeader';
+import SideMenu from '@/components/SideMenu';
 import { checkAuth, getFMFuzzy } from '@/authority/auth';
 import logo from '@/assets/logo.svg'
 const Authorized = memo((props)=> {
@@ -29,15 +30,19 @@ const Authorized = memo((props)=> {
 })
 function Page(props) {
     const {
-        documentTitle
+        documentTitle,
+        theme,
     } = props
     const { pathname } = useLocation()
     const route = find(useSelectedRoutes(),{pathname}).route
     return <>
         <Helmet><title>{`${route.name} - ${documentTitle}`}</title></Helmet>
         <TopNavHeader logo={logo} pathname={pathname} {...props} />
-        <Authorized {...props} />
-        <Footer />
+        {theme=='LEFT'&&<SideMenu pathname={pathname} {...props}/>}
+        <div style={{paddingLeft:theme=='TOP'?0:256}}>
+            <Authorized {...props} />
+            <Footer />            
+        </div>
     </>
 }
 export default Page

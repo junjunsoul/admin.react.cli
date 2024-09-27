@@ -107,11 +107,11 @@ const Page = memo(forwardRef((props, ref) => {
   let tableRef = useRef()
   useEffect(() => {
     //动态计算表格高度
-    setInterval(() => {
-      if (wrapRef && wrapRef.current) {
-        setNH(wrapRef.current.getBoundingClientRect().top)
-      }
-    }, 2000)
+    // setInterval(() => {
+    //   if (wrapRef && wrapRef.current) {
+    //     setNH(wrapRef.current.getBoundingClientRect().top)
+    //   }
+    // }, 2000)
     window.onresize = () => {
       onLayoutResize()
     }

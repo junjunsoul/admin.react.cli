@@ -3,14 +3,6 @@ export default {
     left:-150,
     children: [
         {
-            label: '系统管理',
-            children: [
-                { label: '角色管理', path: '/setting/role_manage' },
-                { label: '账号管理', path: '/setting/admin_manage' },
-                { label: '接口清单', path: '/setting/interface_list' },
-            ]
-        },
-        {
             label: '计划开停规则',
             children: [
                 { label: '计划关停规则列表', path: '/setting/ad_rule_list' },
@@ -18,5 +10,13 @@ export default {
                 { label: '通知方式列表', path: '/setting/ding_list' },
             ]
         },
+        {
+            label: '系统管理',
+            children: [
+                { label: '角色管理', path: '/setting/role_manage' },
+                { label: '账号管理', path: '/setting/admin_manage' },
+                { label: '接口清单', path: '/setting/interface_list' },
+            ]
+        },        
     ]
 }

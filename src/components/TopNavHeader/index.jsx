@@ -5,7 +5,7 @@ import { getMenus } from '@/authority/auth';
 import styles from './index.less';
 
 export default function TopNavHeader(props) {
-  const { authority, logo, documentTitle } = props;
+  const { authority, logo, documentTitle,theme } = props;
   let menuData = getMenus(authority)
   return <div className={`${styles.head}`}>
     <div className={`${styles.main}`}>
@@ -16,7 +16,7 @@ export default function TopNavHeader(props) {
             <h1>{documentTitle}</h1>
           </Link>
         </div>
-        <TopMenu menuData={menuData} {...props} />
+        {theme=='TOP'&&<TopMenu menuData={menuData} {...props} />}
       </div>
       <RightContent {...props} />
     </div>

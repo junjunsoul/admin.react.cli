@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { connect } from '@umijs/max';
 import {
-    Spin
+    Spin,
 } from 'antd'
 import { isEmpty } from 'lodash'
 import PcLayout from './PcLayout'
@@ -13,6 +13,12 @@ function Page(props) {
         dispatch,
         currentUser,
     } = props
+    let PRO_THEME = localStorage.getItem('PRO_THEME')
+    if(PRO_THEME){
+        dispatch({ type: 'global/saveState',payload:{
+            theme:PRO_THEME
+        }})
+    }
     useEffect(() => {
         dispatch({ type: URL_M['fetchCurrent'] })
     }, [])
@@ -23,4 +29,4 @@ function Page(props) {
     }
     return <PcLayout {...props} />
 }
-export default connect(({ user: { currentUser, authority }, global: { documentTitle } }) => ({ currentUser, authority, documentTitle }))(Page)
+export default connect(({ user: { currentUser, authority }, global: { documentTitle,theme } }) => ({ currentUser, authority, documentTitle, theme }))(Page)

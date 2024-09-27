@@ -2,6 +2,7 @@ import { defineConfig } from '@umijs/max';
 import routes from './routes';
 import proxy from './proxy';
 export default defineConfig({
+  mako: {},
   antd: {},
   dva: {
       hmr: true,

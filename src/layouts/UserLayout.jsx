@@ -1,6 +1,6 @@
 import { Outlet } from '@umijs/max';
 import Footer from '@/components/Footer'
-import styles from './UserLayout.less';
+import styles from './styles.less';
 
 const Page = props => {
   return (
