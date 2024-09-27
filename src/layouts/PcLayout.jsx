@@ -39,7 +39,7 @@ function Page(props) {
         <Helmet><title>{`${route.name} - ${documentTitle}`}</title></Helmet>
         <TopNavHeader logo={logo} pathname={pathname} {...props} />
         {theme=='LEFT'&&<SideMenu pathname={pathname} {...props}/>}
-        <div style={{paddingLeft:theme=='TOP'?0:256}}>
+        <div style={{paddingLeft:theme=='TOP'?0:256,paddingTop:64}}>
             <Authorized {...props} />
             <Footer />            
         </div>
