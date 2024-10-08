@@ -1,11 +1,6 @@
-import { Link } from '@umijs/max';
+import { Link,Icon } from '@umijs/max';
 import { chunk } from 'lodash'
-import { createFromIconfontCN } from '@ant-design/icons';
 import styles from './index.less';
-
-const IconFont = createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_777628_zvzd824mgyr.js', // 在 iconfont.cn 上生成
-});
 function urlToList(url) {
   const urllist = url.split('/').filter(i => i);
   return urllist.map((urlItem, index) => `/${urllist.slice(0, index + 1).join('/')}`);
@@ -132,7 +127,6 @@ function TopMenu(props) {
       </Link>
     );
   };
-
   const getInPagePath = item => {
     const itemPath = conversionPath(item.path);
     return (
@@ -143,7 +137,7 @@ function TopMenu(props) {
         title="打开新页面"
         replace={itemPath === pathname}
       >
-        <IconFont type="icon-iosbrowsersoutline" theme="outlined" />
+        <Icon icon="local:outline" width={15} height={15} fill="currentColor"/>
       </Link>
     );
   };

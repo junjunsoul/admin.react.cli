@@ -13,6 +13,7 @@ export default defineConfig({
       baseNavigator: true,
   },
   alias: {},
+  icons: {},
   routes,
   proxy: proxy['dev'],
   npmClient: 'npm',
