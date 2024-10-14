@@ -14,7 +14,8 @@ const GlobalHeaderRight = props => {
     let theme = checked?'TOP':'LEFT'
     localStorage.setItem('PRO_THEME',theme)
     dispatch({ type: 'global/saveState',payload:{
-        theme
+        theme,
+        collapsed:false
     }})
   }
   return (

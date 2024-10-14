@@ -6,6 +6,7 @@ import { find } from 'lodash'
 import TopNavHeader from '@/components/TopNavHeader';
 import SideMenu from '@/components/SideMenu';
 import { checkAuth, getFMFuzzy } from '@/authority/auth';
+import styles from './styles.less';
 import logo from '@/assets/logo.svg'
 const Authorized = memo((props)=> {
     const {
@@ -32,14 +33,17 @@ function Page(props) {
     const {
         documentTitle,
         theme,
+        collapsed,
     } = props
     const { pathname } = useLocation()
     const route = find(useSelectedRoutes(),{pathname}).route
+    const paddingLeft = theme=='TOP'?0:collapsed?60:256
+    const paddingTop= theme=='TOP'?0:64
     return <>
         <Helmet><title>{`${route.name} - ${documentTitle}`}</title></Helmet>
         <TopNavHeader logo={logo} pathname={pathname} {...props} />
         {theme=='LEFT'&&<SideMenu pathname={pathname} {...props}/>}
-        <div style={{paddingLeft:theme=='TOP'?0:256,paddingTop:64}}>
+        <div style={{paddingLeft,paddingTop}} className={styles.wrap}>
             <Authorized {...props} />
             <Footer />            
         </div>

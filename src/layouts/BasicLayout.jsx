@@ -29,4 +29,4 @@ function Page(props) {
     }
     return <PcLayout {...props} />
 }
-export default connect(({ user: { currentUser, authority }, global: { documentTitle,theme } }) => ({ currentUser, authority, documentTitle, theme }))(Page)
+export default connect(({ user: { currentUser, authority }, global: { documentTitle,theme,collapsed } }) => ({ currentUser, authority, documentTitle, theme,collapsed }))(Page)
