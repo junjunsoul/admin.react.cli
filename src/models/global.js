@@ -2,7 +2,7 @@ const GlobalModel = {
   namespace: 'global',
   state: {
     documentTitle: 'Ant Design Pro',
-    theme:'TOP',
+    theme:'LEFT',
     collapsed:false,
   },
   effects: {
