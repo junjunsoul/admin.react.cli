@@ -27,21 +27,21 @@ export default memo((props) => {
   const onSearch = debounce(val => {
     setFilterText(val)
   }, 300)
-  const onCheckAll = useCallback((all) => {
+  const onCheckAll = (all) => {
     let all_v = items.map(r => r.value)
     if (all) {
       onChange(uniq([...value, ...all_v]))
     } else {
       onChange(uniq([...value.filter(v => !all_v.includes(v))]))
     }
-  }, [])
-  const checkChange = useCallback((id) => {
+  }
+  const checkChange = (id) => {
     if (value.includes(id)) {
       onChange([...value.filter(r => r != id)])
     } else {
       onChange([id, ...value])
     }
-  }, [])
+  }
   return <Card
     size="small"
     title={cardTitle}
