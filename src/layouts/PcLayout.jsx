@@ -1,7 +1,7 @@
 import { Outlet, Helmet, useLocation, useSelectedRoutes,Link } from '@umijs/max';
 import { memo } from 'react'
 import Footer from '@/components/Footer'
-import { Button, Result } from 'antd';
+import { Button, Result,Watermark  } from 'antd';
 import { find } from 'lodash'
 import TopNavHeader from '@/components/TopNavHeader';
 import SideMenu from '@/components/SideMenu';
@@ -10,11 +10,15 @@ import styles from './styles.less';
 import logo from '@/assets/logo.svg'
 const Authorized = memo((props)=> {
     const {
-        authority = []
+        authority = [],
+        currentUser:{
+            realname,
+        }
     } = props
     const { pathname } = useLocation()
     if (checkAuth(pathname, authority)) {
         let authorized = Object.assign({}, getFMFuzzy(pathname, authority));
+        // return <Watermark content={realname}><Outlet context={{ authorized }} /></Watermark>
         return <Outlet context={{ authorized }} />
     } else {
         return <Result
@@ -44,7 +48,7 @@ function Page(props) {
         <TopNavHeader logo={logo} pathname={pathname} {...props} />
         {theme=='LEFT'&&<SideMenu pathname={pathname} {...props}/>}
         <div style={{paddingLeft,paddingTop}} className={styles.wrap}>
-            <Authorized {...props} />
+                <Authorized {...props} />
             <Footer />            
         </div>
     </>
