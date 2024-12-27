@@ -1,4 +1,4 @@
-import { useState, useRef, forwardRef, useImperativeHandle, memo, useCallback } from 'react'
+import { useState, useRef, forwardRef, useImperativeHandle, memo, useCallback, useMemo } from 'react'
 import { useOutletContext, connect } from '@umijs/max'
 import {
     Divider,
@@ -230,28 +230,31 @@ const Page = (props) => {
             <a onClick={() => handleAuth(data)}>授权</a>
         </Space >
     }
-    const searchBar = authorized['store'] && <Button onClick={handleAdd} icon={<PlusOutlined />} type="primary"> 新建 </Button>
-    const columnCus = [
-        { headerName: '角色名称', suppressHeaderMenuButton: false, field: 'role_name' },
-        { headerName: '用户数量', sortable: true, field: 'users', total: true },
-    ]
-    if (authorized['store']) {
-        columnCus.push({
-            headerName: '',
-            field: 'action',
-            // width: 100,
-            // pinned: 'right',
-            cellStyle: { textAlign: 'center' },
-            cellRenderer: actionRenderer,
-        })
-    }
+    const searchBar = useMemo(() => authorized['store'] && <Button onClick={handleAdd} icon={<PlusOutlined />} type="primary"> 新建 </Button>, [authorized])
+    const columnCus = useMemo(() => {
+        let col = [
+            { headerName: '角色名称', suppressHeaderMenuButton: false, field: 'role_name' },
+            { headerName: '用户数量', sortable: true, field: 'users', total: true },
+        ]
+        if (authorized['store']) {
+            col.push({
+                headerName: '',
+                field: 'action',
+                // width: 100,
+                // pinned: 'right',
+                cellStyle: { textAlign: 'center' },
+                cellRenderer: actionRenderer,
+            })
+        }
+        return col
+    },[authorized])
     return <PageHeaderWrapper>
         <div className='main-page'>
             <STable
                 searchBar={searchBar}
                 columnCus={columnCus}
                 onGridReady={onGridReady}
-                loading={loading[URL_M['list']]}
+                // loading={loading[URL_M['list']]}
             />
         </div>
         <FormLayout ref={formRef} {...props} reload={tableReloader} />

@@ -192,7 +192,7 @@ const Page = (props) => {
     const columnCus = [
         { headerName: '接口地址', suppressHeaderMenuButton: false, field: 'route' },
         { headerName: '名称', field: 'name' },
-        { headerName: '访问次数', field: 'count', total: true },
+        { headerName: '访问次数', field: 'count',sortable: true, total: true },
         { headerName: '接口描述', field: 'description' },
     ]
     if (authorized['store']) {
