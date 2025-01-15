@@ -173,31 +173,24 @@ const Page = memo(forwardRef((props, ref) => {
   const saveLocal = useCallback(() => {
     let api = tableRef?.current?.api
     if (tbKey) {
-      const colums = api.getColumns().map(row => {
+      const all = api.getColumns()
+      const colums = api.getColumnDefs().map(row => {
+        let field = all.find(r=>r.colId==row.colId)
         return {
-          hide: !row.visible,
+          hide:!field?.visible,
           field: row.colId,
-          pinned: row.pinned,
+          pinned: row.pinned
         }
       })
       localStorage.setItem(tbKey, JSON.stringify(colums))
     }
   },[])
-  const loopColum = row => {
-    const local = getLocal()
-    if (row.children) {
-      row.children.map(item => loopColum(item))
-    } else {
-      let col = find(local, { field: row.field })
-      if (col) {
-        row.hide = col.hide
-        row.pinned = col.pinned
-      }
-    }
-    return row
-  }
   const getColumns = () => {
-    return deepCopy(columnCus).map(row => loopColum(row))
+    const local = getLocal()
+    if(local){
+      return local.map(r=>({...r,...find(columnCus, { field: r.field })}))
+    }
+    return columnCus
   }
   const getContextMenuItems = useCallback((params) => {
     return [
@@ -279,6 +272,7 @@ const Page = memo(forwardRef((props, ref) => {
         localeText={AG_GRID_LOCALE_CN}
         columnDefs={getColumns()}
         defaultColDef={defaultColDef}
+        onColumnMoved={saveLocal}
         sideBar={sideBar}
         rowSelection={rowSelection}
         onColumnVisible={saveLocal}
