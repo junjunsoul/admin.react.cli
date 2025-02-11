@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, forwardRef, useImperativeHandle, memo, useCallback } from 'react'
-import { useOutletContext, connect } from '@umijs/max'
+import { useOutletContext } from '@umijs/max'
 import {
     Divider,
     Button,
@@ -9,23 +9,21 @@ import {
     Input,
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { asyncPost } from '@/utils'
+import { transferPost } from '@/authority/services'
 import JTable from '@/components/JTable'
 import DataCart from '@/components/DataSelect';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper'
 const { TextArea } = Input
 const URL_M = {
-    list: 'setting/getApiList',
-    store: 'setting/storeApi',
-    getApiInfo: 'setting/getApiInfo',
-    roleSelect: 'setting/roleSelect',
+    list: 'setting.getApiList',
+    store: 'setting.storeApi',
+    getApiInfo: 'setting.getApiInfo',
+    roleSelect: 'setting.roleSelect',
 }
 const pageName = '接口清单'
 const FormLayout = memo(forwardRef((props, ref) => {
     const {
         reload,
-        loading = [],
-        dispatch,
     } = props
     const formRef = useRef(null)
     const [visible, setVisible] = useState(false)
@@ -50,7 +48,7 @@ const FormLayout = memo(forwardRef((props, ref) => {
     }
     const getRoleSelect = async () => {
         if (roleList.length == 0) {
-            const res = await asyncPost(URL_M['roleSelect'], {}, dispatch)
+            const res = await transferPost(URL_M['roleSelect'], {})
             if (res.code == 200) {
                 setRoleList(res.data)
             }
@@ -59,7 +57,7 @@ const FormLayout = memo(forwardRef((props, ref) => {
     const okHandle = useCallback(() => {
         formRef.current.validateFields().then(async (fieldsValue) => {
             let result = { ...fieldsValue };
-            const res = await asyncPost(URL_M['store'], result, dispatch)
+            const res = await transferPost(URL_M['store'], result)
             if (res.code == 200) {
                 reload()
                 onCancel()
@@ -88,7 +86,6 @@ const FormLayout = memo(forwardRef((props, ref) => {
             <Button
                 key="submit"
                 type="primary"
-                loading={loading[URL_M[formState]]}
                 onClick={okHandle}
             >
                 提交
@@ -141,10 +138,6 @@ const FormLayout = memo(forwardRef((props, ref) => {
 }))
 
 const Page = (props) => {
-    const {
-        dispatch,
-        loading,
-    } = props
     const { authorized } = useOutletContext()
     const [tableList, setList] = useState([])
     const tableRef = useRef(null)
@@ -152,29 +145,24 @@ const Page = (props) => {
     useEffect(() => {
         tableReloader()
     }, [])
-    const tableReloader = () => {
-        dispatch({
-            type: URL_M['list'],
-            callback: response => {
-                if (response.code == 200) {
-                    setList(response.data)
-
-                }
-            }
-        })
+    const tableReloader = async () => {
+        const res = await transferPost(URL_M['list'], {})
+        if (res.code == 200) {
+            setList(res.data)
+        }
     }
 
     const handleAdd = () => {
         formRef.current.add({})
     }
     const handleUpdate = async data => {
-        const res = await asyncPost(URL_M['getApiInfo'], {}, dispatch)
+        const res = await transferPost(URL_M['getApiInfo'], {})
         if (res.code == 200) {
             formRef.current.edit(res.data)
         }
     }
     const handleCopy = async data => {
-        const res = await asyncPost(URL_M['getApiInfo'], {}, dispatch)
+        const res = await transferPost(URL_M['getApiInfo'], {})
         if (res.code == 200) {
             formRef.current.add({ role_ids: res.data.role_ids })
         }
@@ -214,7 +202,6 @@ const Page = (props) => {
                 columnCus={columnCus}
                 rowData={tableList}
                 tbKey="/setting/interface_list"
-                loading={loading[URL_M['list']]}
                 totalNextTick={(total, dataList) => {
                     total.route = '汇总'
                     return total
@@ -224,4 +211,4 @@ const Page = (props) => {
         <FormLayout ref={formRef} {...props} reload={tableReloader} />
     </PageHeaderWrapper>
 }
-export default connect(({ loading }) => ({ loading: loading.effects }))(Page)
+export default Page

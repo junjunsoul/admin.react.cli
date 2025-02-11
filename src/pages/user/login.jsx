@@ -10,25 +10,22 @@ import {
   LoginForm,
   ProFormText,
 } from '@ant-design/pro-components';
-import { Helmet, connect, history } from '@umijs/max';
+import { Helmet, history, useModel } from '@umijs/max';
 import logo from '@/assets/logo.svg';
-import { asyncPost } from '@/utils'
+import { transferPost } from '@/authority/services'
 const URL_M = {
-  login: 'user/login',
+  login: 'api.login',
 }
 function Page(props) {
-  const {
-    documentTitle,
-    dispatch
-  } = props
+  const { documentTitle } = useModel('global')
   useEffect(() => {
     localStorage.removeItem('token')
   }, [])
   const handleSubmit = async values => {
-    const res = await asyncPost(URL_M['login'], values, dispatch);
+    const res = await transferPost(URL_M['login'], values);
     if (res.code == 200) {
       const { token } = res.data
-      localStorage.setItem('token',token)
+      localStorage.setItem('token', token)
       const urlParams = new URL(window.location.href).searchParams;
       history.push(urlParams.get('redirect') || '/');
     }
@@ -72,4 +69,4 @@ function Page(props) {
     </LoginForm>
   </>
 }
-export default connect(({ global }) => ({ documentTitle: global.documentTitle }))(Page);
+export default Page

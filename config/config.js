@@ -4,9 +4,7 @@ import proxy from './proxy';
 export default defineConfig({
   mako: {},
   antd: {},
-  dva: {
-      hmr: true,
-  },
+  model: {},
   locale: {
       default: 'zh-CN',
       antd: true,

@@ -1,19 +1,14 @@
 import { Avatar, Dropdown } from 'antd';
-import { useIntl } from '@umijs/max'
+import { useIntl, useModel } from '@umijs/max'
 import React from 'react';
 import styles from './index.less';
 function AvatarDropdown(props) {
-  const {
-    dispatch,
-    currentUser,
-  } = props
+  const { logout, currentUser } = useModel('user');
   const intl = useIntl();
   const onMenuClick = event => {
     const { key } = event;
     if (key === 'logout') {
-      dispatch({
-        type: 'user/logout',
-      });
+      logout()
       return;
     }
   };

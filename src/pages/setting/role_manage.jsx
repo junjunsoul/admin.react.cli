@@ -1,5 +1,5 @@
 import { useState, useRef, forwardRef, useImperativeHandle, memo, useCallback, useMemo } from 'react'
-import { useOutletContext, connect } from '@umijs/max'
+import { useOutletContext } from '@umijs/max'
 import {
     Divider,
     Button,
@@ -11,23 +11,22 @@ import {
     Drawer,
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { asyncPost } from '@/utils'
+import { transferPost } from '@/authority/services'
 import STable from '@/components/JTable/server'
 import PageHeaderWrapper from '@/components/PageHeaderWrapper'
 import Auth from './components/auth'
 const { TextArea } = Input
 const URL_M = {
-    list: 'setting/roleList',
-    store: 'setting/roleStore',
-    roleInfo: 'setting/roleInfo',
-    roleAuthInfo: 'setting/roleAuthInfo'
+    list: 'setting.roleList',
+    store: 'setting.roleStore',
+    roleInfo: 'setting.roleInfo',
+    roleAuthInfo: 'setting.roleAuthInfo'
 }
 const pageName = '角色信息'
 const FormLayout = memo(forwardRef((props, ref) => {
     const {
         reload,
         loading = [],
-        dispatch,
     } = props
     const formRef = useRef(null)
     const [visible, setVisible] = useState(false)
@@ -50,7 +49,7 @@ const FormLayout = memo(forwardRef((props, ref) => {
     const okHandle = useCallback(() => {
         formRef.current.validateFields().then(async (fieldsValue) => {
             let result = { ...fieldsValue };
-            const res = await asyncPost(URL_M['store'], result, dispatch)
+            const res = await transferPost(URL_M['store'], result)
             if (res.code == 200) {
                 reload()
                 onCancel()
@@ -116,10 +115,6 @@ const FormLayout = memo(forwardRef((props, ref) => {
     </Modal>
 }))
 const AuthLayout = memo(forwardRef((props, ref) => {
-    const {
-        loading,
-        dispatch
-    } = props
     const [open, setOpen] = useState(false)
     const [initialValues, setInitialValues] = useState({})
     const formRef = useRef(null)
@@ -128,7 +123,7 @@ const AuthLayout = memo(forwardRef((props, ref) => {
     }))
     const auth = async (role_id) => {
         setOpen(true)
-        const res = await asyncPost(URL_M['roleAuthInfo'], { role_id }, dispatch)
+        const res = await transferPost(URL_M['roleAuthInfo'], { role_id })
         if (res.code == 200) {
             setInitialValues(res.data)
         }
@@ -140,7 +135,6 @@ const AuthLayout = memo(forwardRef((props, ref) => {
         placement="right"
         open={open}
         size={'large'}
-        loading={loading[URL_M['roleAuthInfo']]}
         extra={
             <Space>
                 <Button>取消</Button>
@@ -163,10 +157,6 @@ const AuthLayout = memo(forwardRef((props, ref) => {
     </Drawer>
 }))
 const Page = (props) => {
-    const {
-        dispatch,
-        loading,
-    } = props
     const { authorized } = useOutletContext()
     const tableRef = useRef(null)
     const formRef = useRef(null)
@@ -177,26 +167,21 @@ const Page = (props) => {
     }, [])
     const tableReloader = (vlaues) => {
         const dataSource = {
-            getRows: (params) => {
-                dispatch({
-                    type: URL_M['list'],
-                    payload: {
-                        ...vlaues,
-                        ...params.request
-                    },
-                    callback: response => {
-                        if (response.code == 200) {
-                            const { data, recurdsTotal, total } = response
-                            params.success({
-                                rowData: data,
-                                rowCount: recurdsTotal,
-                            })
-                            tableRef.current.setGridOption('pinnedTopRowData', total && [total])
-                        } else {
-                            params.fail()
-                        }
-                    }
+            getRows:async (params) => {
+                const res = await transferPost(URL_M['list'], {
+                    ...vlaues,
+                    ...params.request,                    
                 })
+                if (res.code == 200) {
+                    const { data, recurdsTotal, total } = res
+                    params.success({
+                        rowData: data,
+                        rowCount: recurdsTotal,
+                    })
+                    tableRef.current.setGridOption('pinnedTopRowData', total && [total])
+                } else {
+                    params.fail()
+                }
             }
         }
         tableRef.current.setGridOption('serverSideDatasource', dataSource)
@@ -206,13 +191,13 @@ const Page = (props) => {
         formRef.current.add({})
     }
     const handleUpdate = async data => {
-        const res = await asyncPost(URL_M['roleInfo'], {}, dispatch)
+        const res = await transferPost(URL_M['roleInfo'], {})
         if (res.code == 200) {
             formRef.current.edit(res.data)
         }
     }
     const handleCopy = async data => {
-        const res = await asyncPost(URL_M['roleInfo'], {}, dispatch)
+        const res = await transferPost(URL_M['roleInfo'], {})
         if (res.code == 200) {
             formRef.current.add({ role_id: res.data.role_id })
         }
@@ -261,4 +246,4 @@ const Page = (props) => {
         <AuthLayout ref={authRef} {...props} />
     </PageHeaderWrapper>
 }
-export default connect(({ loading }) => ({ loading: loading.effects }))(Page)
+export default Page
