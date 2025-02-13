@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { transferPost } from '@/authority/services'
 import { history } from '@umijs/max';
-export default function User() {
+export default ()=> {
   const [currentUser, setCurrentUser] = useState({});
   const [authority, setAuthority] = useState([]);
   async function logout() {
     const res = await transferPost('api.logout', {})
     if (res.code == 200) {
       history.push({
-        pathname: '/user/login',
+        pathname: '/user/login', 
       })
       setCurrentUser({})
     }
