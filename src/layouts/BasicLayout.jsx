@@ -8,11 +8,11 @@ import PcLayout from './PcLayout'
 function Page(props) {
     const { setTheme } = useModel('global')
     const { currentUser, fetchCurrent } = useModel('user')
-    let PRO_THEME = localStorage.getItem('PRO_THEME')
-    if (PRO_THEME) {
-        setTheme(PRO_THEME)
-    }
     useEffect(() => {
+        let PRO_THEME = localStorage.getItem('PRO_THEME')
+        if (PRO_THEME) {
+            setTheme(PRO_THEME)
+        }        
         fetchCurrent()
     }, [])
     if (isEmpty(currentUser)) {
