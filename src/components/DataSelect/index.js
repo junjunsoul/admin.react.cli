@@ -97,7 +97,7 @@ export default memo((props) => {
           )
         })}
       </> : <div style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <Empty style={{ height: '70%' }} imageStyle={{ height: '70%' }} />
+        <Empty style={{ height: '70%' }} styles={{ height: '70%' }} />
       </div>}
   </Card>
 })
