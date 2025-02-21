@@ -31,7 +31,7 @@ import {
   RowGroupingModule,
   ServerSideRowModelModule,
 } from "ag-grid-enterprise";
-import { AG_GRID_LOCALE_CN } from "@ag-grid-community/locale";
+import { AG_GRID_LOCALE_CN } from "./locale";
 import { find } from 'lodash'
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,

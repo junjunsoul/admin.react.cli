@@ -36,7 +36,7 @@ import {
   RowGroupingModule,
   ExcelExportModule,
 } from "ag-grid-enterprise";
-import { AG_GRID_LOCALE_CN } from "@ag-grid-community/locale";
+import { AG_GRID_LOCALE_CN } from "./locale";
 import dayjs from 'dayjs'
 import { find, debounce, isEmpty } from 'lodash'
 import { randomWord, totalHandle } from '@/utils'

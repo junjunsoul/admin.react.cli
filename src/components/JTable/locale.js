@@ -186,7 +186,7 @@ export const AG_GRID_LOCALE_CN = {
   totalAndFilteredRows: '行',
   more: '更多',
   to: '至',
-  of: '的',
+  of: '共',
   page: '页',
   pageLastRowUnknown: '?',
   nextPage: '下一页',
