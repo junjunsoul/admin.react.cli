@@ -181,7 +181,11 @@ const Page = (props) => {
         { headerName: '接口地址', suppressHeaderMenuButton: false, field: 'route' },
         { headerName: '名称', field: 'name' },
         { headerName: '访问次数', field: 'count',sortable: true, total: true },
-        { headerName: '接口描述', field: 'description' },
+        { 
+            headerName: '接口描述', 
+            field: 'description',
+            headerTooltip: "Tooltip for Sport Column Header",
+        },
     ]
     if (authorized['store']) {
         columnCus.push({

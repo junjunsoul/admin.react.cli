@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, forwardRef, useImperativeHandle, useMemo,useCallback,memo } from 'react'
+import { useState, useRef, useEffect, forwardRef, useImperativeHandle, useMemo, useCallback, memo } from 'react'
 import {
   Empty,
   Input,
@@ -7,17 +7,67 @@ import {
   Space
 } from 'antd'
 import { CloudDownloadOutlined } from '@ant-design/icons'
-import { AgGridReact } from 'ag-grid-react'
-import 'ag-grid-enterprise'
-import { AG_GRID_LOCALE_CN } from './locale'
+import { AgGridReact } from "ag-grid-react";
+import {
+  ClientSideRowModelModule,
+  ModuleRegistry,
+  LocaleModule,
+  themeQuartz,
+  iconSetQuartzLight,
+  ColumnApiModule,
+  RowApiModule,
+  ValidationModule,
+  RowSelectionModule,
+  CellStyleModule,
+  ClientSideRowModelApiModule,
+  ColumnAutoSizeModule,
+  TooltipModule,
+  QuickFilterModule,
+} from "ag-grid-community";
+import {
+  ColumnsToolPanelModule,
+  CellSelectionModule,
+  ColumnHoverModule,
+  ColumnMenuModule,
+  ContextMenuModule,
+  ClipboardModule,
+  StatusBarModule,
+  PinnedRowModule,
+  RowGroupingModule,
+  ExcelExportModule,
+} from "ag-grid-enterprise";
+import { AG_GRID_LOCALE_CN } from "@ag-grid-community/locale";
 import dayjs from 'dayjs'
 import { find, debounce, isEmpty } from 'lodash'
-import { deepCopy, randomWord, totalHandle } from '@/utils'
+import { randomWord, totalHandle } from '@/utils'
+
+ModuleRegistry.registerModules([
+  ClientSideRowModelModule,
+  ColumnsToolPanelModule,
+  ColumnHoverModule,
+  CellSelectionModule,
+  ColumnMenuModule,
+  ContextMenuModule,
+  ClipboardModule,
+  StatusBarModule,
+  LocaleModule,
+  ColumnApiModule,
+  PinnedRowModule,
+  RowApiModule,
+  ValidationModule,
+  RowGroupingModule,
+  RowSelectionModule,
+  CellStyleModule,
+  ClientSideRowModelApiModule,
+  ColumnAutoSizeModule,
+  TooltipModule,
+  QuickFilterModule,
+  ExcelExportModule,
+]);
 const Search = Input.Search
 const Page = memo(forwardRef((props, ref) => {
-  const { cellRendererSelector = true } = props
   const {
-    theme = 'custom',
+    cellRendererSelector = true,
     name = '',
     loading = false,
     hideHeaderBar = false,
@@ -26,78 +76,11 @@ const Page = memo(forwardRef((props, ref) => {
     searchBar = null,
     tbKey = '',
     columnCus = [],
-    isAutoSize = true,
     autoColumnWidth = false,
     formatCus = [],
     //表格参数
     rowData = [],
     context = {},
-    rowSelection = 'single',
-    enableRangeSelection = true,
-    statusBar = {
-      statusPanels: [
-        {
-          statusPanel: 'agTotalRowCountComponent',
-          align: 'right',
-        },
-        { statusPanel: 'agFilteredRowCountComponent' },
-        { statusPanel: 'agSelectedRowCountComponent' },
-        { statusPanel: 'agAggregationComponent' },
-      ],
-    },
-    defaultColDef = {
-      enableValue: false,
-      enableRowGroup: false,
-      enablePivot: false,
-      sortable: false,
-      resizable: true,
-      filter: false,
-      // width: 130,
-      sortingOrder: ['desc', 'asc'],
-      suppressHeaderMenuButton: true,
-      suppressHeaderFilterButton: true,
-      tooltipComponent: props => {
-        return <div className="custom-tooltip">{props.value}</div>
-      },
-      cellRendererSelector: cellRendererSelector ? (params) => {
-        if (params.node.rowPinned) {
-          return {
-            component: props => {
-              return <b>{props.value}</b>
-            },
-            params: {
-              style: { color: '#1890ff', fontWeight: 'bold' },
-            },
-          }
-        } else {
-          return null
-
-        }
-      } : null,
-      menuTabs: [],
-      mainMenuItems: () => (['pinSubMenu'])
-    },
-    sideBar = tbKey && {
-      toolPanels: [
-        {
-          id: 'columns',
-          labelDefault: 'Columns',
-          labelKey: 'columns',
-          iconKey: 'columns',
-          toolPanel: 'agColumnsToolPanel',
-          toolPanelParams: {
-            suppressRowGroups: true,
-            suppressValues: true,
-            suppressPivots: true,
-            suppressPivotMode: true,
-            suppressSideButtons: true,
-            suppressColumnFilter: false,
-            // suppressColumnSelectAll: true,
-            // suppressColumnExpandAll: true,
-          },
-        },
-      ],
-    },
     totalNextTick = null
   } = props
   const [randomKey, setRandomKey] = useState('')
@@ -120,6 +103,83 @@ const Page = memo(forwardRef((props, ref) => {
     onLayoutResize()
   }, [nH])
 
+  const defaultColDef = useMemo(() => {
+    return {
+      flex: 1,
+      minWidth: 100,
+      enableValue: true,
+      suppressHeaderMenuButton: true,
+      tooltipComponent: props => {
+        return <div className="custom-tooltip">{props.value}</div>
+      },
+      cellRendererSelector: cellRendererSelector ? (params) => {
+        if (params.node.rowPinned) {
+          return {
+            component: props => {
+              return <b>{props.value}</b>
+            },
+            params: {
+              style: { color: '#1890ff', fontWeight: 'bold' },
+            },
+          }
+        } else {
+          return null
+
+        }
+      } : null,
+      mainMenuItems: () => (['pinSubMenu'])
+    };
+  }, []);
+
+  const autoGroupColumnDef = useMemo(() => {
+    return {
+      minWidth: 200,
+    };
+  }, []);
+
+  const sideBar = useMemo(() => {
+    if (tbKey) {
+      return {
+        toolPanels: [
+          {
+            id: "columns",
+            labelDefault: "Columns",
+            labelKey: "columns",
+            iconKey: "columns",
+            toolPanel: "agColumnsToolPanel",
+            toolPanelParams: {
+              suppressRowGroups: true,
+              suppressValues: true,
+            },
+          },
+        ],
+      };
+    } else {
+      return false
+    }
+  }, [tbKey]);
+
+  const statusBar = useMemo(() => {
+    return {
+      statusPanels: [
+        {
+          statusPanel: "agTotalRowCountComponent",
+          align: "right",
+        },
+        { statusPanel: "agFilteredRowCountComponent" },
+        { statusPanel: "agSelectedRowCountComponent" },
+        { statusPanel: "agAggregationComponent" },
+      ],
+    };
+  }, []);
+
+  const cellSelection = useMemo(() => {
+    return { handle: { mode: "range" } };
+  }, []);
+
+  const localeText = useMemo(() => {
+    return AG_GRID_LOCALE_CN;
+  }, []);
   //暴露ref
   useImperativeHandle(ref, () => ({
     tableApi: tableRef?.current?.api,
@@ -165,7 +225,7 @@ const Page = memo(forwardRef((props, ref) => {
     } else {
       return params.value
     }
-  },[])
+  }, [])
   //缓存列
   const getLocal = () => {
     return JSON.parse(localStorage.getItem(tbKey) || null)
@@ -175,53 +235,52 @@ const Page = memo(forwardRef((props, ref) => {
     if (tbKey) {
       const all = api.getColumns()
       const colums = api.getColumnDefs().map(row => {
-        let field = all.find(r=>r.colId==row.colId)
+        let field = all.find(r => r.colId == row.colId)
         return {
-          hide:!field?.visible,
+          hide: !field?.visible,
           field: row.colId,
           pinned: row.pinned
         }
       })
       localStorage.setItem(tbKey, JSON.stringify(colums))
     }
-  },[])
-  const getColumns = () => {
+  }, [])
+  const getColumns = useMemo(() => {
     const local = getLocal()
-    if(local){
-      return local.map(r=>({...r,...find(columnCus, { field: r.field })}))
+    if (local) {
+      return local.map(r => ({ ...r, ...find(columnCus, { field: r.field }) }))
     }
     return columnCus
-  }
+  }, [columnCus])
   const getContextMenuItems = useCallback((params) => {
     return [
       'copy',
       'copyWithHeaders',
       // 'export'
     ]
-  },[])
+  }, [])
   //汇总
   const setVal = debounce(() => {
     setRandomKey(randomWord(4))
   }, 500)
   const pinnedTopRowData = useMemo(() => {
     let api = tableRef?.current?.api
-    if (!api) return null
+    if (!api) return []
     let columnCus = api.getColumnDefs()
     let dataList = [];
     api.forEachNodeAfterFilter(node => {
       dataList.push(node.data);
     });
-
     let total = totalHandle(dataList, columnCus);
     if (isEmpty(total) || dataList.length == 0) {
-      return null;
+      return [];
     }
     if (totalNextTick) {
       return [totalNextTick(total, dataList)]
     } else {
       return [total]
     }
-  }, [randomKey,rowData])
+  }, [randomKey, rowData])
   //列宽度自适应
   const autoSizeColumns = () => {
     let api = tableRef?.current?.api
@@ -239,11 +298,30 @@ const Page = memo(forwardRef((props, ref) => {
     }
   }
   const onModelUpdated = useCallback((params) => {
-    if (isAutoSize && params.newData) {
-      autoSizeColumns()
+    if (params.newData) {
       setVal()
     }
-  },[])
+  }, [])
+  const theme = themeQuartz
+    .withPart(iconSetQuartzLight)
+    .withParams({
+      backgroundColor: "#ffffff",
+      borderColor: "#D9D5D526",
+      browserColorScheme: "light",
+      columnBorder: false,
+      fontFamily: "Arial",
+      foregroundColor: "rgb(46, 55, 66)",
+      headerBackgroundColor: "#F9FAFB",
+      headerFontSize: 14,
+      headerFontWeight: 600,
+      headerTextColor: "#919191",
+      oddRowBackgroundColor: "#F9FAFB",
+      rowBorder: false,
+      sidePanelBorder: false,
+      spacing: 8,
+      wrapperBorder: true,
+      wrapperBorderRadius: 0
+    });
   return <Spin spinning={loading} delay={500}>
     {!hideHeaderBar && (
       <div style={{ display: 'flex', padding: '5px 0', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -266,27 +344,30 @@ const Page = memo(forwardRef((props, ref) => {
         </Space>
       </div>
     )}
-    <div ref={wrapRef} className={`ag-theme-${theme}`} style={{ height, width: '100%' }}>
+    <div ref={wrapRef} style={{ height, width: '100%' }}>
       <AgGridReact
         ref={tableRef}
-        localeText={AG_GRID_LOCALE_CN}
-        columnDefs={getColumns()}
+        theme={theme}
+        localeText={localeText}
+        rowData={rowData}
+        columnDefs={getColumns}
         defaultColDef={defaultColDef}
+        autoGroupColumnDef={autoGroupColumnDef}
+        columnHoverHighlight={true}
+        cellSelection={cellSelection}
+        getContextMenuItems={getContextMenuItems}
+        onModelUpdated={onModelUpdated}
         onColumnMoved={saveLocal}
-        sideBar={sideBar}
-        rowSelection={rowSelection}
         onColumnVisible={saveLocal}
         onColumnPinned={saveLocal}
-        enableRangeSelection={enableRangeSelection}
-        onModelUpdated={onModelUpdated}
         pinnedTopRowData={pinnedTopRowData}
-        getContextMenuItems={getContextMenuItems}
-        onProcessCellForClipboard={onProcessCellForClipboard}
-        noRowsOverlayComponent={() => <Empty />}
-        columnHoverHighlight={true}
+        sideBar={sideBar}
         statusBar={statusBar}
+        processCellForClipboard={onProcessCellForClipboard}
+        tooltipShowDelay={500}
+        tooltipInteraction={true}
+        noRowsOverlayComponent={() => <Empty />}
         context={context}
-        rowData={rowData}
       />
     </div>
   </Spin>

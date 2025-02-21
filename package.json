@@ -10,11 +10,13 @@
     "start": "npm run dev"
   },
   "dependencies": {
+    "@ag-grid-community/locale": "^33.1.0",
     "@ant-design/icons": "^5.0.1",
     "@ant-design/pro-components": "^2.4.4",
     "@umijs/max": "^4.3.0",
-    "ag-grid-enterprise": "^32.0.0",
-    "ag-grid-react": "^32.0.0",
+    "ag-grid-community": "^33.1.0",
+    "ag-grid-enterprise": "^33.1.0",
+    "ag-grid-react": "^33.1.0",
     "antd": "^5.4.0",
     "dayjs": "^1.11.11",
     "lodash": "^4.17.21",

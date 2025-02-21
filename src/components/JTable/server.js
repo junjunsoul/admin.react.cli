@@ -1,93 +1,73 @@
-import { useState, useRef, useEffect, forwardRef, useImperativeHandle,useCallback,memo,useMemo } from 'react'
+import { useState, useRef, useEffect, forwardRef, useImperativeHandle, useCallback, memo, useMemo } from 'react'
 import {
   Empty,
   Spin,
 } from 'antd'
-import { AgGridReact } from 'ag-grid-react'
-import 'ag-grid-enterprise'
-import { AG_GRID_LOCALE_CN } from './locale'
+import { AgGridReact } from "ag-grid-react";
+import {
+  ClientSideRowModelModule,
+  ModuleRegistry,
+  LocaleModule,
+  themeQuartz,
+  iconSetQuartzLight,
+  ColumnApiModule,
+  RowApiModule,
+  ValidationModule,
+  RowSelectionModule,
+  CellStyleModule,
+  ColumnAutoSizeModule,
+  TooltipModule,
+  PaginationModule,
+} from "ag-grid-community";
+import {
+  ColumnsToolPanelModule,
+  CellSelectionModule,
+  ColumnHoverModule,
+  ColumnMenuModule,
+  ContextMenuModule,
+  ClipboardModule,
+  StatusBarModule,
+  PinnedRowModule,
+  RowGroupingModule,
+  ServerSideRowModelModule,
+} from "ag-grid-enterprise";
+import { AG_GRID_LOCALE_CN } from "@ag-grid-community/locale";
 import { find } from 'lodash'
-import { deepCopy } from '@/utils'
+ModuleRegistry.registerModules([
+  ClientSideRowModelModule,
+  ColumnsToolPanelModule,
+  ColumnHoverModule,
+  CellSelectionModule,
+  ColumnMenuModule,
+  ContextMenuModule,
+  ClipboardModule,
+  StatusBarModule,
+  LocaleModule,
+  ColumnApiModule,
+  PinnedRowModule,
+  RowApiModule,
+  ValidationModule,
+  RowGroupingModule,
+  RowSelectionModule,
+  CellStyleModule,
+  ServerSideRowModelModule,
+  ColumnAutoSizeModule,
+  TooltipModule,
+  PaginationModule,
+]);
+
 const Page = memo(forwardRef((props, ref) => {
-  const { cellRendererSelector = true } = props
   const {
-    theme = 'custom',
+    cellRendererSelector = true,
     loading = false,
     hideHeaderBar = false,
     searchBar = null,
     tbKey = '',
     columnCus = [],
-    isAutoSize = true,
     autoColumnWidth = false,
     //表格参数
-    onGridReady=null,
+    onGridReady = null,
     context = {},
-    rowSelection = 'single',
-    enableRangeSelection = true,
-    statusBar = {
-      statusPanels: [
-        {
-          statusPanel: 'agTotalRowCountComponent',
-          align: 'left',
-        },
-        { statusPanel: 'agFilteredRowCountComponent' },
-        { statusPanel: 'agSelectedRowCountComponent' },
-        { statusPanel: 'agAggregationComponent' },
-      ],
-    },
-    defaultColDef = {
-      enableValue: false,
-      enableRowGroup: false,
-      enablePivot: false,
-      sortable: false,
-      resizable: true,
-      filter: false,
-      // width: 130,
-      sortingOrder: ['desc', 'asc'],
-      suppressHeaderMenuButton: true,
-      suppressHeaderFilterButton: true,
-      tooltipComponent: props => {
-        return <div className="custom-tooltip">{props.value}</div>
-      },
-      cellRendererSelector: cellRendererSelector ? (params) => {
-        if (params.node.rowPinned) {
-          return {
-            component: props => {
-              return <b>{props.value}</b>
-            },
-            params: {
-              style: { color: '#1890ff', fontWeight: 'bold' },
-            },
-          }
-        } else {
-          return null
-
-        }
-      } : null,
-      menuTabs: [],
-      mainMenuItems: () => (['pinSubMenu'])
-    },
-    sideBar = tbKey && {
-      toolPanels: [
-        {
-          id: 'columns',
-          labelDefault: 'Columns',
-          labelKey: 'columns',
-          iconKey: 'columns',
-          toolPanel: 'agColumnsToolPanel',
-          toolPanelParams: {
-            suppressRowGroups: true,
-            suppressValues: true,
-            suppressPivots: true,
-            suppressPivotMode: true,
-            suppressSideButtons: true,
-            suppressColumnFilter: false,
-            // suppressColumnSelectAll: true,
-            // suppressColumnExpandAll: true,
-          },
-        },
-      ],
-    },
   } = props
   const [height, setHeight] = useState(400)
   const [nH, setNH] = useState(0)
@@ -108,6 +88,69 @@ const Page = memo(forwardRef((props, ref) => {
     onLayoutResize()
   }, [nH])
 
+  const defaultColDef = useMemo(() => {
+    return {
+      flex: 1,
+      minWidth: 100,
+      enableValue: true,
+      suppressHeaderMenuButton: true,
+      tooltipComponent: props => {
+        return <div className="custom-tooltip">{props.value}</div>
+      },
+      cellRendererSelector: cellRendererSelector ? (params) => {
+        if (params.node.rowPinned) {
+          return {
+            component: props => {
+              return <b>{props.value}</b>
+            },
+            params: {
+              style: { color: '#1890ff', fontWeight: 'bold' },
+            },
+          }
+        } else {
+          return null
+
+        }
+      } : null,
+      mainMenuItems: () => (['pinSubMenu'])
+    };
+  }, []);
+
+  const autoGroupColumnDef = useMemo(() => {
+    return {
+      minWidth: 200,
+    };
+  }, []);
+
+  const sideBar = useMemo(() => {
+    if (tbKey) {
+      return {
+        toolPanels: [
+          {
+            id: "columns",
+            labelDefault: "Columns",
+            labelKey: "columns",
+            iconKey: "columns",
+            toolPanel: "agColumnsToolPanel",
+            toolPanelParams: {
+              suppressRowGroups: true,
+              suppressValues: true,
+            },
+          },
+        ],
+      };
+    } else {
+      return false
+    }
+  }, [tbKey]);
+
+  const cellSelection = useMemo(() => {
+    return { handle: { mode: "range" } };
+  }, []);
+
+  const localeText = useMemo(() => {
+    return AG_GRID_LOCALE_CN;
+  }, []);
   //暴露ref
   useImperativeHandle(ref, () => ({
     autoSizeColumns,
@@ -134,30 +177,30 @@ const Page = memo(forwardRef((props, ref) => {
     if (tbKey) {
       const all = api.getColumns()
       const colums = api.getColumnDefs().map(row => {
-        let field = all.find(r=>r.colId==row.colId)
+        let field = all.find(r => r.colId == row.colId)
         return {
-          hide:!field?.visible,
+          hide: !field?.visible,
           field: row.colId,
           pinned: row.pinned
         }
       })
       localStorage.setItem(tbKey, JSON.stringify(colums))
     }
-  },[])
-  const getColumns = () => {
+  }, [])
+  const getColumns = useMemo(() => {
     const local = getLocal()
-    if(local){
-      return local.map(r=>({...r,...find(columnCus, { field: r.field })}))
+    if (local) {
+      return local.map(r => ({ ...r, ...find(columnCus, { field: r.field }) }))
     }
     return columnCus
-  }
+  }, [columnCus])
   const getContextMenuItems = useCallback((params) => {
     return [
       'copy',
       'copyWithHeaders',
       // 'export'
     ]
-  },[])
+  }, [])
   //列宽度自适应
   const autoSizeColumns = () => {
     let api = tableRef?.current?.api
@@ -175,10 +218,28 @@ const Page = memo(forwardRef((props, ref) => {
     }
   }
   const onModelUpdated = useCallback((params) => {
-    if (isAutoSize) {
-      autoSizeColumns()
-    }
-  },[])
+
+  }, [])
+  const theme = themeQuartz
+    .withPart(iconSetQuartzLight)
+    .withParams({
+      backgroundColor: "#ffffff",
+      borderColor: "#D9D5D526",
+      browserColorScheme: "light",
+      columnBorder: false,
+      fontFamily: "Arial",
+      foregroundColor: "rgb(46, 55, 66)",
+      headerBackgroundColor: "#F9FAFB",
+      headerFontSize: 14,
+      headerFontWeight: 600,
+      headerTextColor: "#919191",
+      oddRowBackgroundColor: "#F9FAFB",
+      rowBorder: false,
+      sidePanelBorder: false,
+      spacing: 8,
+      wrapperBorder: true,
+      wrapperBorderRadius: 0
+    });
   return <Spin spinning={loading} delay={500}>
     {!hideHeaderBar && (
       <div style={{ display: 'flex', padding: '5px 0', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -187,28 +248,30 @@ const Page = memo(forwardRef((props, ref) => {
         </div>
       </div>
     )}
-    <div ref={wrapRef} className={`ag-theme-${theme}`} style={{ height, width: '100%' }}>
+    <div ref={wrapRef} style={{ height, width: '100%' }}>
       <AgGridReact
         ref={tableRef}
-        localeText={AG_GRID_LOCALE_CN}
-        columnDefs={getColumns()}
+        theme={theme}
+        localeText={localeText}
+        columnDefs={getColumns}
         onColumnMoved={saveLocal}
         defaultColDef={defaultColDef}
+        autoGroupColumnDef={autoGroupColumnDef}
         sideBar={sideBar}
         rowModelType={'serverSide'}
-        rowSelection={rowSelection}
         onColumnVisible={saveLocal}
         onColumnPinned={saveLocal}
-        enableRangeSelection={enableRangeSelection}
         onModelUpdated={onModelUpdated}
         getContextMenuItems={getContextMenuItems}
         noRowsOverlayComponent={() => <Empty />}
+        tooltipShowDelay={500}
+        tooltipInteraction={true}
         pagination={true}
         paginationAutoPageSize={true}
         columnHoverHighlight={true}
         onGridReady={onGridReady}
         context={context}
-        // statusBar={statusBar}
+        cellSelection={cellSelection}
       />
     </div>
   </Spin>
