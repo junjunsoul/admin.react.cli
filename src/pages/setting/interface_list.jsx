@@ -18,7 +18,7 @@ const URL_M = {
     list: 'setting.getApiList',
     store: 'setting.storeApi',
     getApiInfo: 'setting.getApiInfo',
-    roleSelect: 'setting.roleSelect',
+    roleSelect: 'setting.roleSelect',    
 }
 const pageName = '接口清单'
 const FormLayout = memo(forwardRef((props, ref) => {

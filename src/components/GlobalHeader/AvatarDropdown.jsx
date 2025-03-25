@@ -1,5 +1,6 @@
 import { Avatar, Dropdown } from 'antd';
 import { useIntl, useModel } from '@umijs/max'
+import { LogoutOutlined,SettingOutlined } from '@ant-design/icons';
 import React from 'react';
 import styles from './index.less';
 function AvatarDropdown(props) {
@@ -11,14 +12,26 @@ function AvatarDropdown(props) {
       logout()
       return;
     }
+    if (key === 'setting') {
+      
+      return;
+    }
   };
   const items = [
     {
       label: intl.formatMessage({
+        id: 'navBar.setting',
+      }),
+      icon:<SettingOutlined />,
+      key: 'setting',
+    },
+    {
+      label: intl.formatMessage({
         id: 'navBar.logout',
       }),
+      icon:<LogoutOutlined />,
       key: 'logout',
-    }
+    },
   ];
   return <Dropdown menu={{
     items,
