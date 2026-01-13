@@ -1,0 +1,280 @@
+@import "tailwindcss";
+
+/* 统一颜色主题配置 */
+:root {
+  /* 主色系统 - 从浅到深 */
+  --color-yy-50: #ffffff;
+  --color-yy-100: #f9fafb;
+  --color-yy-200: #f3f4f6;
+  --color-yy-300: #e5e7eb;
+  --color-yy-400: #d1d5db;
+  --color-yy-500: #9ca3af;
+  --color-yy-600: #6b7280;
+  --color-yy-700: #374151;
+  --color-yy-800: #1f2937;
+  --color-yy-900: #111827;
+  --color-yy-950: #030712;
+  
+  /* 品牌色 */
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  
+  /* 成功色 */
+  --color-success-400: #4ade80;
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+  
+  /* 警告色 */
+  --color-warning-400: #fcd34d;
+  --color-warning-500: #fbbf24;
+  --color-warning-600: #f59e0b;
+  
+  /* 错误色 */
+  --color-error-400: #f87171;
+  --color-error-500: #ef4444;
+  --color-error-600: #dc2626;
+  
+  /* 滚动条颜色 */
+  --scrollbar-thumb: rgba(0, 0, 0, 0.2);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.4);
+  --scrollbar-track: transparent;
+}
+
+/* 暗色主题 - 使用 :is() 确保作用域正确 */
+:is(.dark, [data-theme="dark"]) {
+  /* 主色系统 - 从浅到深（暗色模式下反转） */
+  --color-yy-50: #030712;
+  --color-yy-100: #111827;
+  --color-yy-200: #1f2937;
+  --color-yy-300: #374151;
+  --color-yy-400: #4b5563;
+  --color-yy-500: #6b7280;
+  --color-yy-600: #9ca3af;
+  --color-yy-700: #d1d5db;
+  --color-yy-800: #e5e7eb;
+  --color-yy-900: #f3f4f6;
+  --color-yy-950: #ffffff;
+  
+  /* 品牌色（暗色模式下更亮一些） */
+  --color-primary-400: #93c5fd;
+  --color-primary-500: #60a5fa;
+  --color-primary-600: #3b82f6;
+  --color-primary-700: #2563eb;
+  
+  /* 成功色 */
+  --color-success-400: #86efac;
+  --color-success-500: #4ade80;
+  --color-success-600: #22c55e;
+  
+  /* 警告色 */
+  --color-warning-400: #fde68a;
+  --color-warning-500: #fcd34d;
+  --color-warning-600: #fbbf24;
+  
+  /* 错误色 */
+  --color-error-400: #fca5a5;
+  --color-error-500: #f87171;
+  --color-error-600: #ef4444;
+  
+  /* 滚动条颜色 */
+  --scrollbar-thumb: rgba(255, 255, 255, 0.2);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.4);
+  --scrollbar-track: transparent;
+}
+
+/* 主题切换过渡动画 */
+@layer base {
+  /* 只对根元素和主要容器添加过渡，避免全局过渡造成的性能问题 */
+  html {
+    transition: background-color 0.25s ease-in-out;
+  }
+  
+  body {
+    transition: background-color 0.25s ease-in-out,
+                color 0.25s ease-in-out;
+  }
+
+  /* 为特定元素添加主题过渡，使用更精确的选择器 */
+  /* 排除 Ant Design 组件和动画元素以避免冲突 */
+  :where(:not([class*="ant-"]):not([class*="animate-"]):not([class*="transition-"])) {
+    transition-property: background-color, border-color, color;
+    transition-timing-function: ease-in-out;
+    transition-duration: 0.25s;
+  }
+}
+
+/* View Transitions API 支持 - 现代浏览器的平滑主题切换 */
+@supports (view-transition-name: root) {
+  /* 禁用默认的淡入淡出，使用自定义动画 */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.25s;
+    animation-timing-function: ease-in-out;
+  }
+
+  /* 旧视图淡出 */
+  ::view-transition-old(root) {
+    animation-name: theme-fade-out;
+  }
+
+  /* 新视图淡入 */
+  ::view-transition-new(root) {
+    animation-name: theme-fade-in;
+  }
+}
+
+/* 主题切换动画关键帧 */
+@keyframes theme-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes theme-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Tailwind v4 主题配置 - 在 CSS 中定义 */
+@theme {
+  /* 字体配置 */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  
+  /* 自定义颜色 - yy 系统 */
+  --color-yy-50: var(--color-yy-50);
+  --color-yy-100: var(--color-yy-100);
+  --color-yy-200: var(--color-yy-200);
+  --color-yy-300: var(--color-yy-300);
+  --color-yy-400: var(--color-yy-400);
+  --color-yy-500: var(--color-yy-500);
+  --color-yy-600: var(--color-yy-600);
+  --color-yy-700: var(--color-yy-700);
+  --color-yy-800: var(--color-yy-800);
+  --color-yy-900: var(--color-yy-900);
+  --color-yy-950: var(--color-yy-950);
+  
+  /* 功能色 */
+  --color-primary-400: var(--color-primary-400);
+  --color-primary-500: var(--color-primary-500);
+  --color-primary-600: var(--color-primary-600);
+  --color-primary-700: var(--color-primary-700);
+  
+  --color-success-400: var(--color-success-400);
+  --color-success-500: var(--color-success-500);
+  --color-success-600: var(--color-success-600);
+  
+  --color-warning-400: var(--color-warning-400);
+  --color-warning-500: var(--color-warning-500);
+  --color-warning-600: var(--color-warning-600);
+  
+  --color-error-400: var(--color-error-400);
+  --color-error-500: var(--color-error-500);
+  --color-error-600: var(--color-error-600);
+}
+
+/* 基础样式 */
+
+html.dark,
+body.dark {
+  background-color: #030712;
+}
+
+@media (prefers-color-scheme: dark) {
+  html,
+  body {
+    color-scheme: dark;
+  }
+}
+.lucide {
+  display: flex !important;
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+  /* 垂直滚动条宽度 */
+  height: 12px;
+  /* 水平滚动条高度 */
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  /* 轨道透明 */
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  /* 半透明拇指 */
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+  /* hover 更明显 */
+}
+
+/* Firefox 兼容 */
+* {
+  scrollbar-width: thin; 
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* Ant Design 组件主题切换优化 */
+/* 为 Ant Design 组件添加平滑的主题过渡 */
+.ant-layout,
+.ant-card,
+.ant-modal-content,
+.ant-drawer-content,
+.ant-table,
+.ant-menu,
+.ant-select-dropdown,
+.ant-dropdown-menu,
+.ant-input,
+.ant-btn {
+  transition: background-color 0.25s ease-in-out, 
+              border-color 0.25s ease-in-out, 
+              color 0.25s ease-in-out !important;
+}
+
+/* 减少动画时的重绘 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* 主题切换按钮悬停效果 */
+.theme-toggle-hover::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: width 0.3s ease-in-out, height 0.3s ease-in-out;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.theme-toggle-hover:hover::after {
+  border-color: var(--color-yy-500);
+  width: 100%;
+  height: 100%;
+}

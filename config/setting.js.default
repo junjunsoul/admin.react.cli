@@ -1,3 +1,4 @@
-module.exports = {
-    target : 'http://adadmin.shdxw.net/',
+export default {
+    target : 'https://aiplaylet-test.eyuconnect.com/',
+    // target : 'https://aigc.9yuconnect.com/',
 }

@@ -1,9 +1,9 @@
 const { NODE_ENV } = process.env;
-function targetUrl() {
+async function targetUrl() {
     if (NODE_ENV == 'development') {
         let url = ''
         try {
-            const { target } = require('./setting.js')
+            const { default: { target } } = await import('./setting.js')
             url = target
         } catch { }
         return url
@@ -12,12 +12,12 @@ function targetUrl() {
 }
 export default {
     dev: {
-        '/v1': {
-            target: targetUrl(),
+        '/api': {
+            target:await targetUrl(),
             changeOrigin: true,
             headers: {
                 Connection: 'keep-alive',
             }
-        },
+        }
     }
 };

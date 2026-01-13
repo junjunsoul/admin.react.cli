@@ -1,14 +1,12 @@
-/node_modules
-/.env.local
-/.umirc.local.ts
-/config/config.local.ts
+.DS_Store
+.env
+/node_modules/
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
 /config/setting.js
-/src/.umi
-/src/.umi-production
-/src/.umi-test
-/.umi
-/.umi-production
-/.umi-test
-/dist
-/.mfsu
-.swc
+
+# React Router
+/.react-router/
+/build/
+/dist/
