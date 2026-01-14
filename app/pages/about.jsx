@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 const PageName = '关于我们'
 export function meta() {
   return [
@@ -24,6 +25,9 @@ export const handle = {
   },
 };
 export default function About() {
+  useEffect(() => {
+    console.log('About');
+  }, []);
   return (
     <div className="min-h-screen bg-yy-50 py-16 px-4">
       <div className="container mx-auto max-w-4xl">

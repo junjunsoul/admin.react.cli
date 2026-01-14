@@ -27,16 +27,9 @@ export default function KeepAliveOutlet({ include = [], exclude = [], maxCache =
   const cacheRef = useRef(new Map());
   const cacheOrderRef = useRef([]);
   const scrollPositionRef = useRef(new Map()); // 保存每个路由的滚动位置
-  const [, forceUpdate] = useState({});
-  const [animationKey, setAnimationKey] = useState(0); // 用于触发动画
-
+  const cacheAllRef = useRef(new Map());// 保存所有进来过的路由
   const currentPath = location.pathname;
-  
-  // 当路由改变时，触发动画
-  useEffect(() => {
-    setAnimationKey(prev => prev + 1);
-  }, [currentPath]);
-  
+
   // 获取当前路由的 handle 配置
   const currentHandle = matches[matches.length - 1]?.handle;
 
@@ -46,7 +39,7 @@ export default function KeepAliveOutlet({ include = [], exclude = [], maxCache =
     if (handle && typeof handle.keepAlive !== 'undefined') {
       return handle.keepAlive === true;
     }
-    
+
     // 如果 handle 中没有配置，使用全局配置
     // 如果在 exclude 中，不缓存
     if (exclude.length > 0 && exclude.some(p => path.startsWith(p))) {
@@ -61,37 +54,37 @@ export default function KeepAliveOutlet({ include = [], exclude = [], maxCache =
   };
 
   const needCache = shouldCache(currentPath, currentHandle);
+  // 在渲染前添加缓存，避免重复渲染
+  if (element && needCache && !cacheRef.current.has(currentPath)) {
+    // 新增缓存
+    cacheRef.current.set(currentPath, element);
+    cacheOrderRef.current.push(currentPath);
 
-  // 管理缓存
-  useEffect(() => {
-    if (element && needCache) {
-      if (!cacheRef.current.has(currentPath)) {
-        // 新增缓存
-        cacheRef.current.set(currentPath, element);
+    // 如果超过最大缓存数量，删除最早的缓存
+    if (cacheOrderRef.current.length > maxCache) {
+      const oldestPath = cacheOrderRef.current.shift();
+      cacheRef.current.delete(oldestPath);
+      scrollPositionRef.current.delete(oldestPath); // 同时删除滚动位置
+    }
+  }
+
+  useLayoutEffect(() => {
+    cacheAllRef.current.set(currentPath,true);
+  }, [currentPath])
+
+  // 更新访问顺序
+  useLayoutEffect(() => {
+    if (needCache && cacheRef.current.has(currentPath)) {
+      const index = cacheOrderRef.current.indexOf(currentPath);
+      if (index > -1) {
+        cacheOrderRef.current.splice(index, 1);
         cacheOrderRef.current.push(currentPath);
-
-        // 如果超过最大缓存数量，删除最早的缓存
-        if (cacheOrderRef.current.length > maxCache) {
-          const oldestPath = cacheOrderRef.current.shift();
-          cacheRef.current.delete(oldestPath);
-          scrollPositionRef.current.delete(oldestPath); // 同时删除滚动位置
-        }
-
-        // 强制重新渲染以显示新缓存的组件
-        forceUpdate({});
-      } else {
-        // 更新访问顺序
-        const index = cacheOrderRef.current.indexOf(currentPath);
-        if (index > -1) {
-          cacheOrderRef.current.splice(index, 1);
-          cacheOrderRef.current.push(currentPath);
-        }
       }
     }
-  }, [currentPath, element, needCache, maxCache]);
+  }, [currentPath, needCache]);
 
   // 实时保存滚动位置（监听滚动事件）
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!needCache) return;
 
     // 节流函数 - 避免频繁保存
@@ -133,7 +126,7 @@ export default function KeepAliveOutlet({ include = [], exclude = [], maxCache =
   }, [currentPath, needCache]);
 
   const isCached = cacheRef.current.has(currentPath);
-
+  const hasCached = cacheAllRef.current.has(currentPath);
   // 渲染逻辑
   return (
     <>
@@ -149,8 +142,7 @@ export default function KeepAliveOutlet({ include = [], exclude = [], maxCache =
             }}
           >
             <div
-              key={isActive ? animationKey : undefined} // 激活时通过 key 触发动画
-              className={isActive ? 'keep-alive-page-enter' : ''}
+              className={isActive&&!hasCached ? 'keep-alive-page-enter' : ''}
               style={{
                 display: isActive ? 'block' : 'none',
                 height: '100%',
@@ -164,9 +156,8 @@ export default function KeepAliveOutlet({ include = [], exclude = [], maxCache =
       {/* 如果当前路由不在缓存中，直接渲染（首次访问 + 不需要缓存的路由） */}
       {!isCached && (
         <KeepAliveProvider value={{ active: true, currentPath }}>
-          <div 
-            key={animationKey}
-            className="keep-alive-page-enter"
+          <div
+            className={!hasCached ? 'keep-alive-page-enter' : ''}
             style={{ height: '100%' }}
           >
             {element}
