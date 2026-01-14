@@ -36,7 +36,7 @@ export default () => {
     return <>
         <Navigation handle={handle} />
         <div style={{ paddingLeft, paddingTop: 64 }} className={`transition-all duration-300 ease-in-out`}>
-            <RouteGuard handle={handle} />
+            <RouteGuard handle={handle} enableKeepAlive={true} />
         </div>
     </>
 }
