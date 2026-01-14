@@ -13,7 +13,10 @@ export default defineConfig({
   server: {
     // host: true,
     port: 9000,
-    proxy: config['dev']
+    proxy: config['dev'],
+    watch: {
+      ignored: [path.resolve(__dirname, './config/setting.js')]
+    }
   },
   plugins: [
     tailwindcss(),

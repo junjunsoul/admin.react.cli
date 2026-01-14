@@ -36,6 +36,7 @@ export default (props) => {
             {!collapsed?<Menu
                 mode="inline"
                 selectedKeys={[handle.pageKey]}
+                key={'min'}
                 className="min-h-full w-full pt-2!"
                 inlineCollapsed={true}
                 items={list}
@@ -44,6 +45,7 @@ export default (props) => {
                 mode="inline"
                 selectedKeys={[handle.pageKey]}
                 openKeys={openKeys}
+                key={'max'}
                 className="min-h-full w-full pt-2!"
                 onOpenChange={onOpenChange}
                 items={list}

@@ -85,7 +85,7 @@ const Page = memo(forwardRef((props, ref) => {
     context = {},
     totalNextTick = null
   } = props
-  const { isDark } = useThemeStore()
+  const { isDark, theme:themeName} = useThemeStore()
   const [randomKey, setRandomKey] = useState('')
   const [height, setHeight] = useState(400)
   const [nH, setNH] = useState(0)
@@ -331,7 +331,7 @@ const Page = memo(forwardRef((props, ref) => {
         </Space>
       </div>
     )}
-    <div ref={wrapRef} style={{ height, width: '100%' }}>
+    <div ref={wrapRef} key={themeName} style={{ height, width: '100%' }}>
       <AgGridReact
         ref={tableRef}
         theme={theme}
