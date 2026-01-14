@@ -28,6 +28,22 @@ export function Layout({ children }) {
           __html: `
             (function() {
               try {
+                console.error = function (message, ...args) {
+                    if (typeof message === 'string') {
+                        if (message.includes('************************************************')) {
+                            return // 直接忽略 ag-Grid 相关的警告
+                        }
+                        if (message.includes('ag-grid.com')) {
+                            return
+                        }
+                        if (message.includes('* Your license key is not valid.')) {
+                            return
+                        }
+                        if (message.includes('* All AG Grid Enterprise features are unlocked for trial.')) {
+                            return
+                        }
+                    }
+                }
                 var theme = localStorage.getItem('theme');
                 if (!theme) {
                   theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
