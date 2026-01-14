@@ -127,18 +127,39 @@ export default [
   {
     url: '/api/roleList',
     method: 'post',
-    response: () => {
+    response: ({ body }: any) => {
+      const { startRow = 0, endRow = 100 } = body || {}
+      
+      // 生成1000条角色数据
+      const roleNames = [
+        "超级管理员", "测试", "设计师", "优化师", "渠道运营",
+        "推广技术部", "新人组长", "渠道采购", "数据专员", "SDK开发",
+        "素材管理", "产品经理", "运维工程师", "前端开发", "后端开发",
+        "UI设计师", "测试工程师", "项目经理", "商务专员", "客服专员"
+      ]
+      
+      const allData: Array<{ role_id: number; role_name: string; status: number; users: number }> = []
+      for (let i = 1; i <= 1000; i++) {
+        const roleNameTemplate = roleNames[i % roleNames.length]
+        allData.push({
+          role_id: i,
+          role_name: i <= roleNames.length ? roleNameTemplate : `${roleNameTemplate}${Math.floor(i / roleNames.length)}`,
+          status: Math.random() > 0.3 ? 1 : 0, // 70% 启用状态
+          users: Math.floor(Math.random() * 50) + 1 // 1-50个用户
+        })
+      }
+      
+      // 分页数据
+      const pageData = allData.slice(startRow, endRow)
+      
+      // 计算总用户数
+      const totalUsers = allData.reduce((sum, item) => sum + item.users, 0)
+      
       return {
         code: 200,
-        recurdsTotal: 5,
-        data: [
-          { role_id: 1, role_name: "超级管理员", status: 1, users: 10 },
-          { role_id: 25, role_name: "测试", status: 1, users: 10 },
-          { role_id: 50, role_name: "设计师", status: 1, users: 10 },
-          { role_id: 51, role_name: "优化师", status: 0, users: 10 },
-          { role_id: 69, role_name: "渠道运营", status: 0, users: 10 },
-        ],
-        total: { role_name: '汇总', users: 100 },
+        recurdsTotal: 1000,
+        data: pageData,
+        total: { role_name: '汇总', users: totalUsers },
       }
     }
   },

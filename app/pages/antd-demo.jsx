@@ -55,6 +55,10 @@ export const handle = {
 
   // 页面名称
   title: PageName,
+  
+  // 是否缓存页面（KeepAlive）- 演示页面需要缓存以保持用户输入状态
+  keepAlive: true,
+  
   // 菜单配置（用于自动生成导航菜单和面包屑）
   menu: {
       title: PageName,

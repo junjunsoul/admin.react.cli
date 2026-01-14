@@ -14,6 +14,7 @@
 
 - ✅ **组件状态保留** - 表单数据、组件内部状态完整保留
 - ✅ **滚动位置恢复** - 自动保存和恢复每个路由的滚动位置（window 级别）
+- ✅ **页面切入动画** - 页面加载或从缓存恢复时自动播放优雅的切入动画 ⭐
 - ✅ **生命周期监听** - 提供 activated/deactivated 生命周期钩子
 - ✅ **LRU 缓存策略** - 超出限制时自动清理最久未访问的缓存
 - ✅ **灵活配置** - 支持白名单（include）和黑名单（exclude）
@@ -22,7 +23,23 @@
 
 ### 1. 配置需要缓存的路由
 
-编辑 `app/utils/keepAliveConfig.js`：
+**推荐方式：在路由的 handle 中配置（优先级最高）**
+
+在页面组件中导出 `handle` 对象，设置 `keepAlive` 参数：
+
+```javascript
+// app/pages/settings/user.jsx
+export const handle = {
+  pageKey: 'settings.user',
+  title: '用户管理',
+  keepAlive: true,  // ✅ 启用缓存
+  // ... 其他配置
+};
+```
+
+**备选方式：全局配置文件**
+
+如果不想在每个路由中单独配置，可以编辑 `app/utils/keepAliveConfig.js`：
 
 ```javascript
 export const keepAliveInclude = [
@@ -37,6 +54,11 @@ export const keepAliveExclude = [
 
 export const maxCacheCount = 10; // 最大缓存数量
 ```
+
+**配置优先级：**
+1. 路由 `handle.keepAlive` 配置（优先级最高）
+2. 全局 `keepAliveExclude` 配置
+3. 全局 `keepAliveInclude` 配置
 
 ### 2. 组件已自动启用
 
@@ -107,8 +129,51 @@ function MyPage() {
 3. **组件缓存**：使用 `Map` 存储路由对应的 React 元素
 4. **滚动位置保存**：路由切换前自动保存当前页面滚动位置
 5. **显示切换**：通过 CSS `display` 控制组件显示/隐藏
-6. **滚动位置恢复**：返回缓存路由时自动恢复之前的滚动位置
-7. **LRU 策略**：超出缓存数量限制时，删除最久未访问的缓存（包括滚动位置）
+6. **切入动画**：页面激活时自动播放淡入动画（0.25s，离开时无动画）⭐
+7. **滚动位置恢复**：返回缓存路由时自动恢复之前的滚动位置
+8. **LRU 策略**：超出缓存数量限制时，删除最久未访问的缓存（包括滚动位置）
+
+## 🎨 页面切入动画
+
+### 默认动画效果
+
+页面加载或从缓存恢复时，会自动播放一个优雅的切入动画：
+- **淡入效果**：从透明到不透明（0 → 1）
+- **轻微上移**：从下方 8px 滑入到正常位置
+- **动画时长**：0.25 秒
+- **缓动函数**：ease-out（先快后慢）
+- **离开时**：无动画，直接隐藏（性能更好）
+
+### 自定义动画
+
+如需修改动画效果，编辑 `app/app.css`：
+
+```css
+/* 修改动画样式 */
+@keyframes keepAlivePageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);  /* 修改这里的值 */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.keep-alive-page-enter {
+  animation: keepAlivePageEnter 0.25s ease-out forwards;  /* 修改时长和缓动 */
+}
+```
+
+### 可选动画效果
+
+`app.css` 中已内置多种动画效果，可按需切换：
+
+1. **淡入（无位移）** - `keepAlivePageFadeIn`
+2. **从右侧滑入** - `keepAlivePageSlideInRight`
+
+修改 `.keep-alive-page-enter` 的 `animation` 值即可切换。
 
 ## 💡 注意事项
 
@@ -116,7 +181,7 @@ function MyPage() {
 
 - 保持组件状态（表单数据、滚动位置等）
 - 避免重复请求数据
-- 提升用户体验
+- 优雅的页面切入动画，提升用户体验 ⭐
 
 ### ⚠️ 注意
 

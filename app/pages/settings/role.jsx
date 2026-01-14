@@ -41,6 +41,9 @@ export const handle = {
     // 页面名称
     title: PageName,
 
+    // 是否缓存页面（KeepAlive）- 管理页面通常需要缓存以保持状态
+    keepAlive: true,
+
     // 权限与接口的绑定关系
     permission: {
         list: { apis: [URL_M.list], title: '列表' },                      // 页面访问权限

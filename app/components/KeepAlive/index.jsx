@@ -1,28 +1,53 @@
 import { useRef, useState, useEffect, useLayoutEffect } from 'react';
-import { useLocation, useOutlet } from 'react-router';
+import { useLocation, useOutlet, useMatches } from 'react-router';
 import { KeepAliveProvider } from './context';
 
 /**
  * 路由级别的 KeepAlive 组件
  * 用于缓存路由组件，避免切换路由时组件被销毁
  * 
+ * 支持两种缓存配置方式：
+ * 1. 路由 handle 配置（优先级更高）：在路由的 handle 中设置 keepAlive: true/false
+ * 2. 全局配置：通过 include/exclude 数组控制
+ * 
+ * 特性：
+ * - 页面激活时自动播放切入动画（淡入 + 轻微上移）
+ * - 离开时不播放动画，直接隐藏
+ * - 动画样式定义在 app/app.css 中
+ * 
  * @param {Object} props
- * @param {Array<string>} props.include - 需要缓存的路由路径列表
- * @param {Array<string>} props.exclude - 不需要缓存的路由路径列表
+ * @param {Array<string>} props.include - 需要缓存的路由路径列表（全局配置）
+ * @param {Array<string>} props.exclude - 不需要缓存的路由路径列表（全局配置）
  * @param {number} props.maxCache - 最大缓存数量，默认 10
  */
 export default function KeepAliveOutlet({ include = [], exclude = [], maxCache = 10 }) {
   const location = useLocation();
   const element = useOutlet();
+  const matches = useMatches();
   const cacheRef = useRef(new Map());
   const cacheOrderRef = useRef([]);
   const scrollPositionRef = useRef(new Map()); // 保存每个路由的滚动位置
   const [, forceUpdate] = useState({});
+  const [animationKey, setAnimationKey] = useState(0); // 用于触发动画
 
   const currentPath = location.pathname;
+  
+  // 当路由改变时，触发动画
+  useEffect(() => {
+    setAnimationKey(prev => prev + 1);
+  }, [currentPath]);
+  
+  // 获取当前路由的 handle 配置
+  const currentHandle = matches[matches.length - 1]?.handle;
 
   // 判断当前路由是否需要缓存
-  const shouldCache = (path) => {
+  const shouldCache = (path, handle) => {
+    // 优先检查路由 handle 中的 keepAlive 配置
+    if (handle && typeof handle.keepAlive !== 'undefined') {
+      return handle.keepAlive === true;
+    }
+    
+    // 如果 handle 中没有配置，使用全局配置
     // 如果在 exclude 中，不缓存
     if (exclude.length > 0 && exclude.some(p => path.startsWith(p))) {
       return false;
@@ -35,7 +60,7 @@ export default function KeepAliveOutlet({ include = [], exclude = [], maxCache =
     return include.some(p => path.startsWith(p));
   };
 
-  const needCache = shouldCache(currentPath);
+  const needCache = shouldCache(currentPath, currentHandle);
 
   // 管理缓存
   useEffect(() => {
@@ -124,6 +149,8 @@ export default function KeepAliveOutlet({ include = [], exclude = [], maxCache =
             }}
           >
             <div
+              key={isActive ? animationKey : undefined} // 激活时通过 key 触发动画
+              className={isActive ? 'keep-alive-page-enter' : ''}
               style={{
                 display: isActive ? 'block' : 'none',
                 height: '100%',
@@ -137,7 +164,13 @@ export default function KeepAliveOutlet({ include = [], exclude = [], maxCache =
       {/* 如果当前路由不在缓存中，直接渲染（首次访问 + 不需要缓存的路由） */}
       {!isCached && (
         <KeepAliveProvider value={{ active: true, currentPath }}>
-          {element}
+          <div 
+            key={animationKey}
+            className="keep-alive-page-enter"
+            style={{ height: '100%' }}
+          >
+            {element}
+          </div>
         </KeepAliveProvider>
       )}
     </>

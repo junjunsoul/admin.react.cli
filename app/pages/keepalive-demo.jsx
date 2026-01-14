@@ -21,6 +21,10 @@ export function meta() {
 export const handle = {
   pageKey: 'other.keepalive-demo',
   title: PageName,
+  
+  // 是否缓存页面（KeepAlive）- 演示页面必须缓存才能展示生命周期效果
+  keepAlive: true,
+  
   menu: {
     title: PageName,
     order: 2,
@@ -162,7 +166,7 @@ export default function KeepAliveDemo() {
 
         {/* 自动保存演示 */}
         <Card title="自动保存演示">
-          <Space direction="vertical" style={{ width: '100%' }}>
+          <Space orientation="vertical" style={{ width: '100%' }}>
             <Text type="secondary">
               在下方输入内容，切换到其他路由时会自动保存，返回时会自动恢复。
             </Text>
@@ -220,7 +224,7 @@ export default function KeepAliveDemo() {
 
         {/* 使用说明 */}
         <Card title="使用说明">
-          <Space direction="vertical" size="small">
+          <Space orientation="vertical" size="small">
             <Text>1. 观察页面首次加载时的生命周期日志</Text>
             <Text>2. 在文本框中输入一些内容</Text>
             <Text>3. 点击菜单切换到其他路由（如：用户管理）</Text>

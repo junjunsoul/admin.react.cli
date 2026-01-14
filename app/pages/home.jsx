@@ -13,6 +13,10 @@ export const handle = {
 
   // 页面名称
   title: PageName,
+  
+  // 是否缓存页面（KeepAlive）- 首页通常不需要缓存
+  keepAlive: false,
+  
   // 菜单配置（用于自动生成导航菜单和面包屑）
   menu: {
       title: PageName,
