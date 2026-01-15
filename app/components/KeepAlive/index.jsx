@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useLayoutEffect } from 'react';
+import { useRef, useLayoutEffect } from 'react';
 import { useLocation, useOutlet, useMatches } from 'react-router';
 import { KeepAliveProvider } from './context';
 
@@ -6,82 +6,55 @@ import { KeepAliveProvider } from './context';
  * 路由级别的 KeepAlive 组件
  * 用于缓存路由组件，避免切换路由时组件被销毁
  * 
- * 支持两种缓存配置方式：
- * 1. 路由 handle 配置（优先级更高）：在路由的 handle 中设置 keepAlive: true/false
- * 2. 全局配置：通过 include/exclude 数组控制
- * 
  * 特性：
  * - 页面激活时自动播放切入动画（淡入 + 轻微上移）
  * - 离开时不播放动画，直接隐藏
  * - 动画样式定义在 app/app.css 中
  * 
- * @param {Object} props
- * @param {Array<string>} props.include - 需要缓存的路由路径列表（全局配置）
- * @param {Array<string>} props.exclude - 不需要缓存的路由路径列表（全局配置）
- * @param {number} props.maxCache - 最大缓存数量，默认 10
  */
-export default function KeepAliveOutlet({ include = [], exclude = [], maxCache = 10 }) {
-  const location = useLocation();
+const MAX_CACHE = 10;
+
+export default function KeepAliveOutlet() {
   const element = useOutlet();
   const matches = useMatches();
   const cacheRef = useRef(new Map());
   const cacheOrderRef = useRef([]);
   const scrollPositionRef = useRef(new Map()); // 保存每个路由的滚动位置
   const cacheAllRef = useRef(new Map());// 保存所有进来过的路由
-  const currentPath = location.pathname;
-
+  
   // 获取当前路由的 handle 配置
   const currentHandle = matches[matches.length - 1]?.handle;
-
-  // 判断当前路由是否需要缓存
-  const shouldCache = (path, handle) => {
-    // 优先检查路由 handle 中的 keepAlive 配置
-    if (handle && typeof handle.keepAlive !== 'undefined') {
-      return handle.keepAlive === true;
-    }
-
-    // 如果 handle 中没有配置，使用全局配置
-    // 如果在 exclude 中，不缓存
-    if (exclude.length > 0 && exclude.some(p => path.startsWith(p))) {
-      return false;
-    }
-    // 如果 include 为空，缓存所有路由
-    if (include.length === 0) {
-      return true;
-    }
-    // 如果在 include 中，缓存
-    return include.some(p => path.startsWith(p));
-  };
-
-  const needCache = shouldCache(currentPath, currentHandle);
+  const currentKey = currentHandle?.pageKey;
+  const needCache = currentHandle?.keepAlive === true && Boolean(currentKey);
   // 在渲染前添加缓存，避免重复渲染
-  if (element && needCache && !cacheRef.current.has(currentPath)) {
+  if (element && needCache && !cacheRef.current.has(currentKey)) {
     // 新增缓存
-    cacheRef.current.set(currentPath, element);
-    cacheOrderRef.current.push(currentPath);
+    cacheRef.current.set(currentKey, element);
+    cacheOrderRef.current.push(currentKey);
 
     // 如果超过最大缓存数量，删除最早的缓存
-    if (cacheOrderRef.current.length > maxCache) {
-      const oldestPath = cacheOrderRef.current.shift();
-      cacheRef.current.delete(oldestPath);
-      scrollPositionRef.current.delete(oldestPath); // 同时删除滚动位置
+    if (cacheOrderRef.current.length > MAX_CACHE) {
+      const oldestKey = cacheOrderRef.current.shift();
+      cacheRef.current.delete(oldestKey);
+      scrollPositionRef.current.delete(oldestKey); // 同时删除滚动位置
     }
   }
 
   useLayoutEffect(() => {
-    cacheAllRef.current.set(currentPath,true);
-  }, [currentPath])
+    if (!needCache) return;
+    cacheAllRef.current.set(currentKey, true);
+  }, [currentKey, needCache])
 
   // 更新访问顺序
   useLayoutEffect(() => {
-    if (needCache && cacheRef.current.has(currentPath)) {
-      const index = cacheOrderRef.current.indexOf(currentPath);
+    if (needCache && cacheRef.current.has(currentKey)) {
+      const index = cacheOrderRef.current.indexOf(currentKey);
       if (index > -1) {
         cacheOrderRef.current.splice(index, 1);
-        cacheOrderRef.current.push(currentPath);
+        cacheOrderRef.current.push(currentKey);
       }
     }
-  }, [currentPath, needCache]);
+  }, [currentKey, needCache]);
 
   // 实时保存滚动位置（监听滚动事件）
   useLayoutEffect(() => {
@@ -96,7 +69,7 @@ export default function KeepAliveOutlet({ include = [], exclude = [], maxCache =
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
         const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0;
 
-        scrollPositionRef.current.set(currentPath, { scrollTop, scrollLeft });
+        scrollPositionRef.current.set(currentKey, { scrollTop, scrollLeft });
       }, 50); // 50ms 节流
     };
 
@@ -108,12 +81,12 @@ export default function KeepAliveOutlet({ include = [], exclude = [], maxCache =
       if (timeoutId) clearTimeout(timeoutId);
       window.removeEventListener('scroll', saveScrollPosition);
     };
-  }, [currentPath, needCache]);
+  }, [currentKey, needCache]);
 
   // 恢复滚动位置（使用 useLayoutEffect 避免闪动）
   useLayoutEffect(() => {
-    if (needCache && scrollPositionRef.current.has(currentPath)) {
-      const position = scrollPositionRef.current.get(currentPath);
+    if (needCache && scrollPositionRef.current.has(currentKey)) {
+      const position = scrollPositionRef.current.get(currentKey);
       // 使用 useLayoutEffect 在浏览器绘制前同步恢复滚动位置，避免闪动
       // 由于是从缓存恢复，DOM 是完整的，可以立即滚动
       setTimeout(() => {
@@ -123,22 +96,22 @@ export default function KeepAliveOutlet({ include = [], exclude = [], maxCache =
       // 新路由或不需要缓存的路由，滚动到顶部
       window.scrollTo(0, 0);
     }
-  }, [currentPath, needCache]);
+  }, [currentKey, needCache]);
 
-  const isCached = cacheRef.current.has(currentPath);
-  const hasCached = cacheAllRef.current.has(currentPath);
+  const isCached = needCache && cacheRef.current.has(currentKey);
+  const hasCached = needCache && cacheAllRef.current.has(currentKey);
   // 渲染逻辑
   return (
     <>
       {/* 渲染所有缓存的组件 */}
-      {Array.from(cacheRef.current.entries()).map(([pathname, cachedElement]) => {
-        const isActive = pathname === currentPath;
+      {Array.from(cacheRef.current.entries()).map(([cacheKey, cachedElement]) => {
+        const isActive = cacheKey === currentKey;
         return (
           <KeepAliveProvider
-            key={pathname}
+            key={cacheKey}
             value={{
               active: isActive,
-              currentPath: pathname
+              currentKey: cacheKey
             }}
           >
             <div
@@ -155,7 +128,7 @@ export default function KeepAliveOutlet({ include = [], exclude = [], maxCache =
       })}
       {/* 如果当前路由不在缓存中，直接渲染（首次访问 + 不需要缓存的路由） */}
       {!isCached && (
-        <KeepAliveProvider value={{ active: true, currentPath }}>
+        <KeepAliveProvider value={{ active: true, currentKey }}>
           <div
             className={!hasCached ? 'keep-alive-page-enter' : ''}
             style={{ height: '100%' }}

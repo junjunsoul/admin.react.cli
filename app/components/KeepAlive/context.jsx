@@ -7,7 +7,7 @@ import { useLocation } from 'react-router';
  */
 const KeepAliveContext = createContext({
   active: true,
-  currentPath: '',
+  currentKey: '',
 });
 
 export const KeepAliveProvider = KeepAliveContext.Provider;
