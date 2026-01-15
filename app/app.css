@@ -294,7 +294,7 @@ body.dark {
   }
 }
 
-.keep-alive-page-enter {
+.page-enter {
   animation: keepAlivePageEnter 0.25s ease-out forwards;
 }
 
@@ -322,7 +322,7 @@ body.dark {
   }
 }
 
-/* 如需切换动画效果，修改 .keep-alive-page-enter 的 animation 属性：
+/* 如需切换动画效果，修改 .page-enter 的 animation 属性：
  * animation: keepAlivePageFadeIn 0.3s ease-out forwards;
  * animation: keepAlivePageSlideInRight 0.3s ease-out forwards;
  */

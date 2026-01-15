@@ -15,6 +15,7 @@ import { KeepAliveProvider } from './context';
 const MAX_CACHE = 10;
 
 export default function KeepAliveOutlet() {
+  const location = useLocation();
   const element = useOutlet();
   const matches = useMatches();
   const cacheRef = useRef(new Map());
@@ -24,6 +25,7 @@ export default function KeepAliveOutlet() {
   
   // 获取当前路由的 handle 配置
   const currentHandle = matches[matches.length - 1]?.handle;
+  const currentPath = location.pathname;
   const currentKey = currentHandle?.pageKey;
   const needCache = currentHandle?.keepAlive === true && Boolean(currentKey);
   // 在渲染前添加缓存，避免重复渲染
@@ -41,9 +43,8 @@ export default function KeepAliveOutlet() {
   }
 
   useLayoutEffect(() => {
-    if (!needCache) return;
-    cacheAllRef.current.set(currentKey, true);
-  }, [currentKey, needCache])
+    cacheAllRef.current.set(currentPath, true);
+  }, [currentPath])
 
   // 更新访问顺序
   useLayoutEffect(() => {
@@ -99,7 +100,7 @@ export default function KeepAliveOutlet() {
   }, [currentKey, needCache]);
 
   const isCached = needCache && cacheRef.current.has(currentKey);
-  const hasCached = needCache && cacheAllRef.current.has(currentKey);
+  const hasLoaded = cacheAllRef.current.has(currentPath);
   // 渲染逻辑
   return (
     <>
@@ -115,7 +116,7 @@ export default function KeepAliveOutlet() {
             }}
           >
             <div
-              className={isActive&&!hasCached ? 'keep-alive-page-enter' : ''}
+              className={isActive&&!hasLoaded ? 'page-enter' : ''}
               style={{
                 display: isActive ? 'block' : 'none',
                 height: '100%',
@@ -130,7 +131,7 @@ export default function KeepAliveOutlet() {
       {!isCached && (
         <KeepAliveProvider value={{ active: true, currentKey }}>
           <div
-            className={!hasCached ? 'keep-alive-page-enter' : ''}
+            className={!hasLoaded ? 'page-enter' : ''}
             style={{ height: '100%' }}
           >
             {element}
