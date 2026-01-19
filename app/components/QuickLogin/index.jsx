@@ -10,6 +10,8 @@ import { useUserStore } from '@/store/userStore'
 import { useThemeStore } from '@/store/themeStore'
 import { lightTheme, darkTheme } from '@/utils/theme'
 import { transferPost } from '@/services'
+import ThemeToggle from '@/components/Navigation/components/ThemeToggle'
+import logo from '@/assets/logo.png';
 const URL_M = {
     login: 'api.login'
 }
@@ -58,14 +60,21 @@ export const Bulk = (props) => {
     const { allowClose = false } = props
     const { theme: currentTheme } = useThemeStore()
     const themeConfig = currentTheme === 'dark' ? darkTheme : lightTheme
-    
+    const title = window.sysTitle;
     return <ConfigProvider theme={themeConfig}>
-        <div className={` fixed top-0 left-0 flex justify-center items-center bg-yy-50 z-999 h-full w-full `} onClick={(e) => { allowClose && login.hide() }}>
-            <div style={{backgroundImage:`url('https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/V-_oS6r-i7wAAAAAAAAAAAAAFl94AQBr')`,backgroundSize:'100% 100%'}} className={`min-w-[426px] min-h-[200px] border border-yy-300 rounded-lg p-4 flex flex-col justify-center`} onClick={(e) => { e.stopPropagation() }}>
-                <div className='flex justify-center mb-6'>
-                    React-Admin
+        <div className={`fixed top-0 left-0 z-999 size-full bg-yy-50`} onClick={(e) => { allowClose && login.hide() }}>
+            <div className="login-background absolute left-0 top-0 size-full"></div>
+            <div className="absolute top-0 left-0 size-full z-20 flex justify-center items-center">
+                <div className="absolute top-10 right-10">
+                    <ThemeToggle />
                 </div>
-                <LoginWrap/>
+                <div className={`min-w-[426px] min-h-[200px] bg-yy-50 rounded-2xl p-8 flex flex-col justify-center shadow-primary-500/10`} onClick={(e) => { e.stopPropagation() }}>
+                    <div className='flex justify-center items-center gap-2'>
+                        <img src={logo} alt="logo" width={48}/>
+                        <span className="text-xl font-bold text-yy-950 hover:text-primary-300">{title}</span>
+                    </div>
+                    <LoginWrap/>
+                </div>                
             </div>
         </div>
     </ConfigProvider>

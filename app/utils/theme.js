@@ -107,80 +107,80 @@ export const darkTheme = {
     algorithm: theme.darkAlgorithm,
     components: {
         "Input": {
-            "colorBorder": "rgb(68,68,68)",
-            "colorBgContainer": "rgb(30,30,30)",
+            "colorBorder": "#3b3e43",
+            "colorBgContainer": "#242628",
             "activeShadow": "0 0 0 2px rgba(255, 115, 0, 0.15)"
         },
         "InputNumber": {
-            "colorBorder": "rgb(68,68,68)",
-            "colorBgContainer": "rgb(30,30,30)",
+            "colorBorder": "#3b3e43",
+            "colorBgContainer": "#242628",
             "activeShadow": "0 0 0 2px rgba(255, 115, 0, 0.15)"
         },
         "TextArea": {
-            "colorBorder": "rgb(68,68,68)",
-            "colorBgContainer": "rgb(30,30,30)",
+            "colorBorder": "#3b3e43",
+            "colorBgContainer": "#242628",
             "activeShadow": "0 0 0 2px rgba(255, 115, 0, 0.15)"
         },
         "Modal": {
-            "contentBg": "rgb(30,30,30)",
-            "headerBg": "rgb(30,30,30)",
-            "titleColor": "rgb(217,217,217)",
+            "contentBg": "#242628",
+            "headerBg": "#242628",
+            "titleColor": "#e8e8e8",
             "colorBgMask": "rgba(0, 0, 0, 0.65)"
         },
         "Select": {
-            "colorBgContainer": "rgb(44,44,44)",
-            "colorBorder": "rgb(68,68,68)",
-            "colorBgElevated": "rgb(30,30,30)",
+            "colorBgContainer": "#242628",
+            "colorBorder": "#3b3e43",
+            "colorBgElevated": "#2d2f33",
             "controlOutline": "rgba(255, 115, 0, 0.15)"
         },
         "Empty": {
-            "colorTextDescription": "rgb(217,217,217)"
+            "colorTextDescription": "#a0a0a0"
         },
         "Popover": {
-            "colorBgElevated": "rgb(44,44,44)",
-            "colorBorder": "rgb(68,68,68)"
+            "colorBgElevated": "#2d2f33",
+            "colorBorder": "#3b3e43"
         },
         "Tooltip": {
-            "colorBgSpotlight": "rgb(44,44,44)"
+            "colorBgSpotlight": "#2d2f33"
         },
         "Form": {
-            "labelColor": "rgb(217,217,217)",
+            "labelColor": "#e8e8e8",
             "labelFontSize": 14
         },
         "Button": {
             "primaryShadow": "0 2px 0 rgba(255, 115, 0, 0.15)"
         },
         "Table": {
-            "colorBgContainer": "rgb(30,30,30)",
-            "colorBorderSecondary": "rgb(68,68,68)",
-            "headerBg": "rgb(44,44,44)"
+            "colorBgContainer": "#1a1c1e",
+            "colorBorderSecondary": "#3b3e43",
+            "headerBg": "#242628"
         },
         "Card": {
-            "colorBgContainer": "rgb(30,30,30)",
-            "colorBorderSecondary": "rgb(68,68,68)"
+            "colorBgContainer": "#242628",
+            "colorBorderSecondary": "#3b3e43"
         },
         "Menu": {
-            "colorBgContainer": "rgb(30,30,30)",
-            "itemBg": "rgb(30,30,30)",
+            "colorBgContainer": "#1a1c1e",
+            "itemBg": "#1a1c1e",
             "itemSelectedBg": "rgba(255, 115, 0, 0.2)"
         },
         "Drawer": {
-            "colorBgElevated": "rgb(30,30,30)",
+            "colorBgElevated": "#242628",
             "colorBgMask": "rgba(0, 0, 0, 0.65)"
         },
         "Dropdown": {
-            "colorBgElevated": "rgb(44,44,44)",
-            "controlItemBgHover": "rgb(68,68,68)"
+            "colorBgElevated": "#2d2f33",
+            "controlItemBgHover": "#3b3e43"
         },
         "Message": {
-            "contentBg": "rgb(44,44,44)"
+            "contentBg": "#2d2f33"
         },
         "Notification": {
-            "colorBgElevated": "rgb(44,44,44)"
+            "colorBgElevated": "#2d2f33"
         },
         "DatePicker": {
-            "colorBorder": "rgb(68,68,68)",
-            "colorBgContainer": "rgb(30,30,30)",
+            "colorBorder": "#3b3e43",
+            "colorBgContainer": "#242628",
             "activeShadow": "0 0 0 2px rgba(255, 115, 0, 0.15)"
         },
         "Tabs": {
@@ -189,7 +189,7 @@ export const darkTheme = {
             "inkBarColor": "#ff7300"
         },
         "Pagination": {
-            "colorBgContainer": "rgb(44,44,44)"
+            "colorBgContainer": "#2d2f33"
         },
         "Switch": {
             "colorPrimary": "#ff7300",
@@ -197,17 +197,17 @@ export const darkTheme = {
         }
     },
     token: {
-        "colorBgBase": "#1E1E1E",
+        "colorBgBase": "#1a1c1e",
         "colorPrimary": "#ff7300",
         "colorInfo": "#ff7300",
         "colorSuccess": "#52c41a",
         "colorWarning": "#faad14",
         "colorError": "#ff4d4f",
-        "colorTextBase": "#d9d9d9",
+        "colorTextBase": "#e8e8e8",
         "colorTextSecondary": "rgba(255, 255, 255, 0.65)",
         "colorTextTertiary": "rgba(255, 255, 255, 0.45)",
-        "colorBorder": "rgb(68,68,68)",
-        "colorBorderSecondary": "rgb(44,44,44)",
+        "colorBorder": "#3b3e43",
+        "colorBorderSecondary": "#2d2f33",
         "borderRadius": 6,
         "fontSize": 14,
         "fontFamily": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif"

@@ -12,6 +12,7 @@ export default [
         route('/about','pages/about.jsx'),
         route('/antd-demo','pages/antd-demo.jsx'),
         route('/keepalive-demo','pages/keepalive-demo.jsx'),
+        route('/timeline-editor','pages/timeline-editor.jsx'),
     ]),
 ]
 

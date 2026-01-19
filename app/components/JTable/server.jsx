@@ -19,7 +19,7 @@ import {
   TooltipModule,
   PaginationModule,
   colorSchemeLightCold,
-  colorSchemeDarkBlue,
+  colorSchemeDark,
 } from "ag-grid-community";
 import {
   ColumnsToolPanelModule,
@@ -76,7 +76,7 @@ const Page = memo(forwardRef((props, ref) => {
   const [nH, setNH] = useState(0)
   let wrapRef = useRef()
   let tableRef = useRef()
-  const { isDark } = useThemeStore()
+  const { isDark, theme:themeName} = useThemeStore()
   useEffect(() => {
     //动态计算表格高度
     // setInterval(() => {
@@ -162,7 +162,7 @@ const Page = memo(forwardRef((props, ref) => {
   //动态高度
   const onLayoutResize = () => {
     if (wrapRef && wrapRef.current) {
-      let top = wrapRef.current.getBoundingClientRect().top + 12
+      let top = wrapRef.current.getBoundingClientRect().top + 32
       let documentHeight = document.documentElement.clientHeight || window.innerHeight
       if (props.height) {
         setHeight(props.height)
@@ -226,7 +226,7 @@ const Page = memo(forwardRef((props, ref) => {
   }, [])
   const theme = useMemo(() => {
     return themeQuartz
-    .withPart(isDark?colorSchemeDarkBlue:colorSchemeLightCold)
+    .withPart(isDark?colorSchemeDark:colorSchemeLightCold)
   }, [isDark])
   return <Spin spinning={loading} delay={500}>
     {!hideHeaderBar && (
@@ -236,7 +236,7 @@ const Page = memo(forwardRef((props, ref) => {
         </div>
       </div>
     )}
-    <div ref={wrapRef} style={{ height, width: '100%' }}>
+    <div ref={wrapRef} key={themeName} style={{ height, width: '100%' }}>
       <AgGridReact
         ref={tableRef}
         theme={theme}

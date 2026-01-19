@@ -2,86 +2,106 @@
 
 /* 统一颜色主题配置 */
 :root {
-  /* 主色系统 - 从浅到深 */
+  /* 主色系统 - 保持原样，优秀 */
   --color-yy-50: #ffffff;
-  --color-yy-100: #f9fafb;
-  --color-yy-200: #f3f4f6;
-  --color-yy-300: #e5e7eb;
-  --color-yy-400: #d1d5db;
-  --color-yy-500: #9ca3af;
-  --color-yy-600: #6b7280;
-  --color-yy-700: #374151;
-  --color-yy-800: #1f2937;
-  --color-yy-900: #111827;
-  --color-yy-950: #030712;
+  --color-yy-100: #f0f3f6;
+  --color-yy-200: #e1e7ed;
+  --color-yy-300: #c4cfdb;
+  --color-yy-400: #a7b7c9;
+  --color-yy-500: #6a8199;
+  --color-yy-600: #4d5e73;
+  --color-yy-700: #2f3b4d;
+  --color-yy-800: #1a2330;
+  --color-yy-900: #0e1521;
+  --color-yy-950: #020b13;
   
-  /* 品牌色 */
+  /* 品牌色 - 光模式稍暗，确保对比 */
   --color-primary-400: #60a5fa;
   --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
+  --color-primary-600: #0091ff;
   --color-primary-700: #1d4ed8;
+  --on-primary: var(--color-yy-950); /* 黑文字 */
   
-  /* 成功色 */
+  /* 成功色 - 光模式保持 */
   --color-success-400: #4ade80;
   --color-success-500: #22c55e;
   --color-success-600: #16a34a;
+  --on-success: var(--color-yy-950); /* 黑文字 */
   
   /* 警告色 */
   --color-warning-400: #fcd34d;
   --color-warning-500: #fbbf24;
   --color-warning-600: #f59e0b;
+  --on-warning: var(--color-yy-950); /* 黑文字 */
   
   /* 错误色 */
   --color-error-400: #f87171;
   --color-error-500: #ef4444;
   --color-error-600: #dc2626;
+  --on-error: var(--color-yy-950); /* 黑文字 */
   
-  /* 滚动条颜色 */
+  /* 滚动条 - 保持 */
   --scrollbar-thumb: rgba(0, 0, 0, 0.2);
   --scrollbar-thumb-hover: rgba(0, 0, 0, 0.4);
   --scrollbar-track: transparent;
 }
 
-/* 暗色主题 - 使用 :is() 确保作用域正确 */
+/* 暗色主题 */
 :is(.dark, [data-theme="dark"]) {
-  /* 主色系统 - 从浅到深（暗色模式下反转） */
-  --color-yy-50: #030712;
-  --color-yy-100: #111827;
-  --color-yy-200: #1f2937;
-  --color-yy-300: #374151;
-  --color-yy-400: #4b5563;
-  --color-yy-500: #6b7280;
-  --color-yy-600: #9ca3af;
-  --color-yy-700: #d1d5db;
-  --color-yy-800: #e5e7eb;
-  --color-yy-900: #f3f4f6;
+  /* 主色系统 - 基于 #242628 */
+  --color-yy-50: #1a1c1e;
+  --color-yy-100: #242628;
+  --color-yy-200: #2d2f33;
+  --color-yy-300: #3b3e43;
+  --color-yy-400: #4f5259;
+  --color-yy-500: #6d7279;
+  --color-yy-600: #a3a6ab;
+  --color-yy-700: #c6c9cd;
+  --color-yy-800: #e3e5e7;
+  --color-yy-900: #f2f3f4;
   --color-yy-950: #ffffff;
   
-  /* 品牌色（暗色模式下更亮一些） */
+  /* 品牌色 - 暗色主题使用更亮的颜色以提升对比度 */
   --color-primary-400: #93c5fd;
-  --color-primary-500: #60a5fa;
-  --color-primary-600: #3b82f6;
+  --color-primary-500: #60a5fa; /* 更亮的蓝色 */
+  --color-primary-600: #0091ff;
   --color-primary-700: #2563eb;
+  --on-primary: var(--color-yy-950); /* 深色文字 */
   
-  /* 成功色 */
+  /* 成功色 - 用-600为主，白文字（3.30→调整为#15803d:5.12） */
   --color-success-400: #86efac;
-  --color-success-500: #4ade80;
-  --color-success-600: #22c55e;
+  --color-success-500: #16a34a; /* 更暗 */
+  --color-success-600: #15803d; /* 新增深绿 */
+  --on-success: var(--color-yy-50); /* 白文字 */
   
-  /* 警告色 */
+  /* 警告色 - 用-600，白文字（2.15→#d97706:4.51） */
   --color-warning-400: #fde68a;
-  --color-warning-500: #fcd34d;
-  --color-warning-600: #fbbf24;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706; /* 新增深橙 */
+  --on-warning: var(--color-yy-50);
   
-  /* 错误色 */
+  /* 错误色 - 保持-600，白文字4.83好 */
   --color-error-400: #fca5a5;
-  --color-error-500: #f87171;
-  --color-error-600: #ef4444;
+  --color-error-500: #ef4444;
+  --color-error-600: #dc2626;
+  --on-error: var(--color-yy-50);
   
-  /* 滚动条颜色 */
+  /* 滚动条 - 保持 */
   --scrollbar-thumb: rgba(255, 255, 255, 0.2);
   --scrollbar-thumb-hover: rgba(255, 255, 255, 0.4);
   --scrollbar-track: transparent;
+}
+
+/* 示例组件：确保使用on-变量 */
+.primary-button {
+  background-color: var(--color-primary-500);
+  color: var(--on-primary);
+  border: 1px solid var(--color-primary-600);
+}
+
+.success-button {
+  background-color: var(--color-success-500);
+  color: var(--on-success);
 }
 
 /* 主题切换过渡动画 */
@@ -186,7 +206,7 @@
 
 html.dark,
 body.dark {
-  background-color: #030712;
+  background-color: #242628;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -229,6 +249,11 @@ body.dark {
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
+/* 登录背景 */
+.login-background{
+  background: linear-gradient(154deg,#07070915 30%,hsl(212 100% 45%/30%) 48%,#07070915 64%);
+  filter: blur(100px);
+}
 /* Ant Design 组件主题切换优化 */
 /* 为 Ant Design 组件添加平滑的主题过渡 */
 .ant-layout,

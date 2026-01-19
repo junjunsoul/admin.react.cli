@@ -8,7 +8,7 @@ import Navigation from "@/components/Navigation";
 export default () => {
     const matches = useMatches();
     const handle = matches[matches.length - 1]?.handle;
-    const { checkLogin, isInitialized, fetchCurrent, collapsed } = useUserStore();
+    const { checkLogin, isInitialized, fetchCurrent } = useUserStore();
 
     if (handle) {
         //需要登录
@@ -31,11 +31,9 @@ export default () => {
     } else {
         return <RouteGuard handle={handle} />
     }
-    //显示导航菜单
-    const paddingLeft = !collapsed ? 80 : 200
     return <>
         <Navigation handle={handle} />
-        <div style={{ paddingLeft, paddingTop: 64 }} className={`transition-all duration-300 ease-in-out`}>
+        <div style={{ paddingTop: 64 }} className={`transition-all duration-300 ease-in-out`}>
             <RouteGuard handle={handle} enableKeepAlive={true} />
         </div>
     </>
