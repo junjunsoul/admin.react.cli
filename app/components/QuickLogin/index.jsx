@@ -68,7 +68,7 @@ export const Bulk = (props) => {
                 <div className="absolute top-10 right-10">
                     <ThemeToggle />
                 </div>
-                <div className={`min-w-[426px] min-h-[200px] bg-yy-50 rounded-2xl p-8 flex flex-col justify-center shadow-primary-500/10`} onClick={(e) => { e.stopPropagation() }}>
+                <div className={`min-w-[426px] min-h-[200px] bg-yy-50 rounded-2xl p-8 flex flex-col justify-center gap-4 shadow-primary-500/10`} onClick={(e) => { e.stopPropagation() }}>
                     <div className='flex justify-center items-center gap-2'>
                         <img src={logo} alt="logo" width={48}/>
                         <span className="text-xl font-bold text-yy-950 hover:text-primary-300">{title}</span>

@@ -42,7 +42,7 @@ function AvatarDropdown(props) {
     },
   ];
   const content = <div className='flex flex-col'>
-    {items.map(row => <div key={row.key} onClick={() => onMenuClick(row.key)} className='flex items-center gap-2 hover:text-primary-400 p-2 cursor-pointer'>
+    {items.map(row => <div key={row.key} onClick={() => onMenuClick(row.key)} className='flex items-center gap-2 hover:text-primary-600 p-2 cursor-pointer'>
       {row.icon}
       <span>{row.label}</span>
     </div>)}
@@ -54,7 +54,7 @@ function AvatarDropdown(props) {
           <Avatar size={'large'} src={`${user.avatar_url}?x-tos-process=image/resize,w_38`} alt="avatar" />
         </span>
       </Popover>
-      <span className='text-yy-400 text-sm'>{user.nick_name}</span>
+      <span className='text-yy-50 text-sm'>{user.nick_name}</span>
       <EditPassword ref={passwordRef} />
       <EditUserInfo ref={userInfoRef} />
     </div>
