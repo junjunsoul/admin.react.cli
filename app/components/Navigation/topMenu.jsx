@@ -21,11 +21,11 @@ const MenuItem = (props) => {
     }, [items]);
     const ItemComponent = ({row}) => {
         return <span className={`relative group/item cursor-pointer text-sm hover:bg-primary-500/10 py-1.5 pl-3 pr-13 rounded-md text-nowrap ${pageKey===row.key?'bg-primary-500/10':''}`}>
-            <Link to={row.path} className={`hover:text-primary-500! peer flex h-full items-center ${pageKey===row.key?'text-primary-500!':'text-yy-800!'}`}>{row.label}</Link>
-            <Link title="打开新页面" className="hidden group-hover/item:flex text-yy-800! hover:text-primary-500! absolute top-0 right-1 px-1 h-full items-center justify-center" to={row.path} target="_blank"><ExternalLink size={16}/></Link>
+            <Link to={row.path} className={`group-hover/item:text-primary-600! peer flex h-full items-center ${pageKey===row.key?'text-primary-600!':'text-yy-800!'}`}>{row.label}</Link>
+            <Link title="打开新页面" className="hidden group-hover/item:flex text-yy-800! group-hover/item:text-primary-600! absolute top-0 right-1 px-1 h-full items-center justify-center" to={row.path} target="_blank"><ExternalLink size={16}/></Link>
         </span>
     }
-    return <div className="flex gap-2 absolute top-full left-0 bg-yy-100/98 backdrop-blur-sm hidden rounded-b-lg group-hover:flex p-2.5 shadow-lg">
+    return <div className="flex gap-2 absolute top-full left-0 bg-yy-100 backdrop-blur-sm hidden rounded-b-lg group-hover:flex p-2.5 shadow-lg">
         {list.map((rows, index) => <div className="flex flex-col shrink-0 gap-1" key={index}>
             {rows.map(row => <Fragment key={row.key}>
                 {!row.children && <ItemComponent row={row}/>}
